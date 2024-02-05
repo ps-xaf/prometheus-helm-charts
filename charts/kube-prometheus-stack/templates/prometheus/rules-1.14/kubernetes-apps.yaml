@@ -39,12 +39,20 @@ spec:
         runbook_url: {{ .Values.defaultRules.runbookUrl }}/kubernetes/kubepodcrashlooping
         summary: Pod is crash looping.
       expr: max_over_time(kube_pod_container_status_waiting_reason{reason="CrashLoopBackOff", job="{{ $kubeStateMetricsJob }}", namespace=~"{{ $targetNamespace }}"}[5m]) >= 1
+      {{- if and .Values.customRules (index .Values.customRules "KubePodCrashLooping") }}
+      for: {{ index .Values.customRules.KubePodCrashLooping "for" | default "15m" }}
+      {{- else}}
       for: 15m
+      {{- end }}
       {{- with .Values.defaultRules.keepFiringFor }}
       keep_firing_for: "{{ . }}"
       {{- end }}
       labels:
+        {{- if and .Values.customRules (index .Values.customRules "KubePodCrashLooping") }}
+        severity: {{ index .Values.customRules.KubePodCrashLooping "labelsSeverity" | default "warning" }}
+        {{- else }}
         severity: warning
+        {{- end }}
       {{- if or .Values.defaultRules.additionalRuleLabels .Values.defaultRules.additionalRuleGroupLabels.kubernetesApps }}
         {{- with .Values.defaultRules.additionalRuleLabels }}
           {{- toYaml . | nindent 8 }}
@@ -74,12 +82,20 @@ spec:
             1, max by ({{ range $.Values.defaultRules.additionalAggregationLabels }}{{ . }},{{ end }}namespace, pod, owner_kind, cluster) (kube_pod_owner{owner_kind!="Job"})
           )
         ) > 0
+      {{- if and .Values.customRules (index .Values.customRules "KubePodNotReady") }}
+      for: {{ index .Values.customRules.KubePodNotReady "for" | default "15m" }}
+      {{- else}}
       for: 15m
+      {{- end }}
       {{- with .Values.defaultRules.keepFiringFor }}
       keep_firing_for: "{{ . }}"
       {{- end }}
       labels:
+        {{- if and .Values.customRules (index .Values.customRules "KubePodNotReady") }}
+        severity: {{ index .Values.customRules.KubePodNotReady "labelsSeverity" | default "warning" }}
+        {{- else }}
         severity: warning
+        {{- end }}
       {{- if or .Values.defaultRules.additionalRuleLabels .Values.defaultRules.additionalRuleGroupLabels.kubernetesApps }}
         {{- with .Values.defaultRules.additionalRuleLabels }}
           {{- toYaml . | nindent 8 }}
@@ -105,12 +121,20 @@ spec:
         kube_deployment_status_observed_generation{job="{{ $kubeStateMetricsJob }}", namespace=~"{{ $targetNamespace }}"}
           !=
         kube_deployment_metadata_generation{job="{{ $kubeStateMetricsJob }}", namespace=~"{{ $targetNamespace }}"}
+      {{- if and .Values.customRules (index .Values.customRules "KubeDeploymentGenerationMismatch") }}
+      for: {{ index .Values.customRules.KubeDeploymentGenerationMismatch "for" | default "15m" }}
+      {{- else}}
       for: 15m
+      {{- end }}
       {{- with .Values.defaultRules.keepFiringFor }}
       keep_firing_for: "{{ . }}"
       {{- end }}
       labels:
+        {{- if and .Values.customRules (index .Values.customRules "KubeDeploymentGenerationMismatch") }}
+        severity: {{ index .Values.customRules.KubeDeploymentGenerationMismatch "labelsSeverity" | default "warning" }}
+        {{- else }}
         severity: warning
+        {{- end }}
       {{- if or .Values.defaultRules.additionalRuleLabels .Values.defaultRules.additionalRuleGroupLabels.kubernetesApps }}
         {{- with .Values.defaultRules.additionalRuleLabels }}
           {{- toYaml . | nindent 8 }}
@@ -142,12 +166,20 @@ spec:
             ==
           0
         )
+      {{- if and .Values.customRules (index .Values.customRules "KubeDeploymentReplicasMismatch") }}
+      for: {{ index .Values.customRules.KubeDeploymentReplicasMismatch "for" | default "15m" }}
+      {{- else}}
       for: 15m
+      {{- end }}
       {{- with .Values.defaultRules.keepFiringFor }}
       keep_firing_for: "{{ . }}"
       {{- end }}
       labels:
+        {{- if and .Values.customRules (index .Values.customRules "KubeDeploymentReplicasMismatch") }}
+        severity: {{ index .Values.customRules.KubeDeploymentReplicasMismatch "labelsSeverity" | default "warning" }}
+        {{- else }}
         severity: warning
+        {{- end }}
       {{- if or .Values.defaultRules.additionalRuleLabels .Values.defaultRules.additionalRuleGroupLabels.kubernetesApps }}
         {{- with .Values.defaultRules.additionalRuleLabels }}
           {{- toYaml . | nindent 8 }}
@@ -172,12 +204,20 @@ spec:
       expr: |-
         kube_deployment_status_condition{condition="Progressing", status="false",job="{{ $kubeStateMetricsJob }}", namespace=~"{{ $targetNamespace }}"}
         != 0
+      {{- if and .Values.customRules (index .Values.customRules "KubeDeploymentRolloutStuck") }}
+      for: {{ index .Values.customRules.KubeDeploymentRolloutStuck "for" | default "15m" }}
+      {{- else}}
       for: 15m
+      {{- end }}
       {{- with .Values.defaultRules.keepFiringFor }}
       keep_firing_for: "{{ . }}"
       {{- end }}
       labels:
+        {{- if and .Values.customRules (index .Values.customRules "KubeDeploymentRolloutStuck") }}
+        severity: {{ index .Values.customRules.KubeDeploymentRolloutStuck "labelsSeverity" | default "warning" }}
+        {{- else }}
         severity: warning
+        {{- end }}
       {{- if or .Values.defaultRules.additionalRuleLabels .Values.defaultRules.additionalRuleGroupLabels.kubernetesApps }}
         {{- with .Values.defaultRules.additionalRuleLabels }}
           {{- toYaml . | nindent 8 }}
@@ -209,12 +249,20 @@ spec:
             ==
           0
         )
+      {{- if and .Values.customRules (index .Values.customRules "KubeStatefulSetReplicasMismatch") }}
+      for: {{ index .Values.customRules.KubeStatefulSetReplicasMismatch "for" | default "15m" }}
+      {{- else}}
       for: 15m
+      {{- end }}
       {{- with .Values.defaultRules.keepFiringFor }}
       keep_firing_for: "{{ . }}"
       {{- end }}
       labels:
+        {{- if and .Values.customRules (index .Values.customRules "KubeStatefulSetReplicasMismatch") }}
+        severity: {{ index .Values.customRules.KubeStatefulSetReplicasMismatch "labelsSeverity" | default "warning" }}
+        {{- else }}
         severity: warning
+        {{- end }}
       {{- if or .Values.defaultRules.additionalRuleLabels .Values.defaultRules.additionalRuleGroupLabels.kubernetesApps }}
         {{- with .Values.defaultRules.additionalRuleLabels }}
           {{- toYaml . | nindent 8 }}
@@ -240,12 +288,20 @@ spec:
         kube_statefulset_status_observed_generation{job="{{ $kubeStateMetricsJob }}", namespace=~"{{ $targetNamespace }}"}
           !=
         kube_statefulset_metadata_generation{job="{{ $kubeStateMetricsJob }}", namespace=~"{{ $targetNamespace }}"}
+      {{- if and .Values.customRules (index .Values.customRules "KubeStatefulSetGenerationMismatch") }}
+      for: {{ index .Values.customRules.KubeStatefulSetGenerationMismatch "for" | default "15m" }}
+      {{- else}}
       for: 15m
+      {{- end }}
       {{- with .Values.defaultRules.keepFiringFor }}
       keep_firing_for: "{{ . }}"
       {{- end }}
       labels:
+        {{- if and .Values.customRules (index .Values.customRules "KubeStatefulSetGenerationMismatch") }}
+        severity: {{ index .Values.customRules.KubeStatefulSetGenerationMismatch "labelsSeverity" | default "warning" }}
+        {{- else }}
         severity: warning
+        {{- end }}
       {{- if or .Values.defaultRules.additionalRuleLabels .Values.defaultRules.additionalRuleGroupLabels.kubernetesApps }}
         {{- with .Values.defaultRules.additionalRuleLabels }}
           {{- toYaml . | nindent 8 }}
@@ -285,12 +341,20 @@ spec:
             ==
           0
         )
+      {{- if and .Values.customRules (index .Values.customRules "KubeStatefulSetUpdateNotRolledOut") }}
+      for: {{ index .Values.customRules.KubeStatefulSetUpdateNotRolledOut "for" | default "15m" }}
+      {{- else}}
       for: 15m
+      {{- end }}
       {{- with .Values.defaultRules.keepFiringFor }}
       keep_firing_for: "{{ . }}"
       {{- end }}
       labels:
+        {{- if and .Values.customRules (index .Values.customRules "KubeStatefulSetUpdateNotRolledOut") }}
+        severity: {{ index .Values.customRules.KubeStatefulSetUpdateNotRolledOut "labelsSeverity" | default "warning" }}
+        {{- else }}
         severity: warning
+        {{- end }}
       {{- if or .Values.defaultRules.additionalRuleLabels .Values.defaultRules.additionalRuleGroupLabels.kubernetesApps }}
         {{- with .Values.defaultRules.additionalRuleLabels }}
           {{- toYaml . | nindent 8 }}
@@ -336,12 +400,20 @@ spec:
             ==
           0
         )
+      {{- if and .Values.customRules (index .Values.customRules "KubeDaemonSetRolloutStuck") }}
+      for: {{ index .Values.customRules.KubeDaemonSetRolloutStuck "for" | default "15m" }}
+      {{- else}}
       for: 15m
+      {{- end }}
       {{- with .Values.defaultRules.keepFiringFor }}
       keep_firing_for: "{{ . }}"
       {{- end }}
       labels:
+        {{- if and .Values.customRules (index .Values.customRules "KubeDaemonSetRolloutStuck") }}
+        severity: {{ index .Values.customRules.KubeDaemonSetRolloutStuck "labelsSeverity" | default "warning" }}
+        {{- else }}
         severity: warning
+        {{- end }}
       {{- if or .Values.defaultRules.additionalRuleLabels .Values.defaultRules.additionalRuleGroupLabels.kubernetesApps }}
         {{- with .Values.defaultRules.additionalRuleLabels }}
           {{- toYaml . | nindent 8 }}
@@ -364,12 +436,20 @@ spec:
         runbook_url: {{ .Values.defaultRules.runbookUrl }}/kubernetes/kubecontainerwaiting
         summary: Pod container waiting longer than 1 hour
       expr: sum by ({{ range $.Values.defaultRules.additionalAggregationLabels }}{{ . }},{{ end }}namespace, pod, container, cluster) (kube_pod_container_status_waiting_reason{job="{{ $kubeStateMetricsJob }}", namespace=~"{{ $targetNamespace }}"}) > 0
+      {{- if and .Values.customRules (index .Values.customRules "KubeContainerWaiting") }}
+      for: {{ index .Values.customRules.KubeContainerWaiting "for" | default "1h" }}
+      {{- else}}
       for: 1h
+      {{- end }}
       {{- with .Values.defaultRules.keepFiringFor }}
       keep_firing_for: "{{ . }}"
       {{- end }}
       labels:
+        {{- if and .Values.customRules (index .Values.customRules "KubeContainerWaiting") }}
+        severity: {{ index .Values.customRules.KubeContainerWaiting "labelsSeverity" | default "warning" }}
+        {{- else }}
         severity: warning
+        {{- end }}
       {{- if or .Values.defaultRules.additionalRuleLabels .Values.defaultRules.additionalRuleGroupLabels.kubernetesApps }}
         {{- with .Values.defaultRules.additionalRuleLabels }}
           {{- toYaml . | nindent 8 }}
@@ -395,12 +475,20 @@ spec:
         kube_daemonset_status_desired_number_scheduled{job="{{ $kubeStateMetricsJob }}", namespace=~"{{ $targetNamespace }}"}
           -
         kube_daemonset_status_current_number_scheduled{job="{{ $kubeStateMetricsJob }}", namespace=~"{{ $targetNamespace }}"} > 0
+      {{- if and .Values.customRules (index .Values.customRules "KubeDaemonSetNotScheduled") }}
+      for: {{ index .Values.customRules.KubeDaemonSetNotScheduled "for" | default "10m" }}
+      {{- else}}
       for: 10m
+      {{- end }}
       {{- with .Values.defaultRules.keepFiringFor }}
       keep_firing_for: "{{ . }}"
       {{- end }}
       labels:
+        {{- if and .Values.customRules (index .Values.customRules "KubeDaemonSetNotScheduled") }}
+        severity: {{ index .Values.customRules.KubeDaemonSetNotScheduled "labelsSeverity" | default "warning" }}
+        {{- else }}
         severity: warning
+        {{- end }}
       {{- if or .Values.defaultRules.additionalRuleLabels .Values.defaultRules.additionalRuleGroupLabels.kubernetesApps }}
         {{- with .Values.defaultRules.additionalRuleLabels }}
           {{- toYaml . | nindent 8 }}
@@ -423,12 +511,20 @@ spec:
         runbook_url: {{ .Values.defaultRules.runbookUrl }}/kubernetes/kubedaemonsetmisscheduled
         summary: DaemonSet pods are misscheduled.
       expr: kube_daemonset_status_number_misscheduled{job="{{ $kubeStateMetricsJob }}", namespace=~"{{ $targetNamespace }}"} > 0
+      {{- if and .Values.customRules (index .Values.customRules "KubeDaemonSetMisScheduled") }}
+      for: {{ index .Values.customRules.KubeDaemonSetMisScheduled "for" | default "15m" }}
+      {{- else}}
       for: 15m
+      {{- end }}
       {{- with .Values.defaultRules.keepFiringFor }}
       keep_firing_for: "{{ . }}"
       {{- end }}
       labels:
+        {{- if and .Values.customRules (index .Values.customRules "KubeDaemonSetMisScheduled") }}
+        severity: {{ index .Values.customRules.KubeDaemonSetMisScheduled "labelsSeverity" | default "warning" }}
+        {{- else }}
         severity: warning
+        {{- end }}
       {{- if or .Values.defaultRules.additionalRuleLabels .Values.defaultRules.additionalRuleGroupLabels.kubernetesApps }}
         {{- with .Values.defaultRules.additionalRuleLabels }}
           {{- toYaml . | nindent 8 }}
@@ -455,7 +551,11 @@ spec:
           and
         kube_job_status_active{job="{{ $kubeStateMetricsJob }}", namespace=~"{{ $targetNamespace }}"} > 0) > 43200
       labels:
+        {{- if and .Values.customRules (index .Values.customRules "KubeJobNotCompleted") }}
+        severity: {{ index .Values.customRules.KubeJobNotCompleted "labelsSeverity" | default "warning" }}
+        {{- else }}
         severity: warning
+        {{- end }}
       {{- if or .Values.defaultRules.additionalRuleLabels .Values.defaultRules.additionalRuleGroupLabels.kubernetesApps }}
         {{- with .Values.defaultRules.additionalRuleLabels }}
           {{- toYaml . | nindent 8 }}
@@ -478,12 +578,20 @@ spec:
         runbook_url: {{ .Values.defaultRules.runbookUrl }}/kubernetes/kubejobfailed
         summary: Job failed to complete.
       expr: kube_job_failed{job="{{ $kubeStateMetricsJob }}", namespace=~"{{ $targetNamespace }}"}  > 0
+      {{- if and .Values.customRules (index .Values.customRules "KubeJobFailed") }}
+      for: {{ index .Values.customRules.KubeJobFailed "for" | default "15m" }}
+      {{- else}}
       for: 15m
+      {{- end }}
       {{- with .Values.defaultRules.keepFiringFor }}
       keep_firing_for: "{{ . }}"
       {{- end }}
       labels:
+        {{- if and .Values.customRules (index .Values.customRules "KubeJobFailed") }}
+        severity: {{ index .Values.customRules.KubeJobFailed "labelsSeverity" | default "warning" }}
+        {{- else }}
         severity: warning
+        {{- end }}
       {{- if or .Values.defaultRules.additionalRuleLabels .Values.defaultRules.additionalRuleGroupLabels.kubernetesApps }}
         {{- with .Values.defaultRules.additionalRuleLabels }}
           {{- toYaml . | nindent 8 }}
@@ -519,12 +627,20 @@ spec:
         kube_horizontalpodautoscaler_spec_max_replicas{job="{{ $kubeStateMetricsJob }}", namespace=~"{{ $targetNamespace }}"})
           and
         changes(kube_horizontalpodautoscaler_status_current_replicas{job="{{ $kubeStateMetricsJob }}", namespace=~"{{ $targetNamespace }}"}[15m]) == 0
+      {{- if and .Values.customRules (index .Values.customRules "KubeHpaReplicasMismatch") }}
+      for: {{ index .Values.customRules.KubeHpaReplicasMismatch "for" | default "15m" }}
+      {{- else}}
       for: 15m
+      {{- end }}
       {{- with .Values.defaultRules.keepFiringFor }}
       keep_firing_for: "{{ . }}"
       {{- end }}
       labels:
+        {{- if and .Values.customRules (index .Values.customRules "KubeHpaReplicasMismatch") }}
+        severity: {{ index .Values.customRules.KubeHpaReplicasMismatch "labelsSeverity" | default "warning" }}
+        {{- else }}
         severity: warning
+        {{- end }}
       {{- if or .Values.defaultRules.additionalRuleLabels .Values.defaultRules.additionalRuleGroupLabels.kubernetesApps }}
         {{- with .Values.defaultRules.additionalRuleLabels }}
           {{- toYaml . | nindent 8 }}
@@ -550,12 +666,20 @@ spec:
         kube_horizontalpodautoscaler_status_current_replicas{job="{{ $kubeStateMetricsJob }}", namespace=~"{{ $targetNamespace }}"}
           ==
         kube_horizontalpodautoscaler_spec_max_replicas{job="{{ $kubeStateMetricsJob }}", namespace=~"{{ $targetNamespace }}"}
+      {{- if and .Values.customRules (index .Values.customRules "KubeHpaMaxedOut") }}
+      for: {{ index .Values.customRules.KubeHpaMaxedOut "for" | default "15m" }}
+      {{- else}}
       for: 15m
+      {{- end }}
       {{- with .Values.defaultRules.keepFiringFor }}
       keep_firing_for: "{{ . }}"
       {{- end }}
       labels:
+        {{- if and .Values.customRules (index .Values.customRules "KubeHpaMaxedOut") }}
+        severity: {{ index .Values.customRules.KubeHpaMaxedOut "labelsSeverity" | default "warning" }}
+        {{- else }}
         severity: warning
+        {{- end }}
       {{- if or .Values.defaultRules.additionalRuleLabels .Values.defaultRules.additionalRuleGroupLabels.kubernetesApps }}
         {{- with .Values.defaultRules.additionalRuleLabels }}
           {{- toYaml . | nindent 8 }}

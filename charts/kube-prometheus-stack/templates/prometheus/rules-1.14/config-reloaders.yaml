@@ -39,12 +39,20 @@ spec:
         runbook_url: {{ .Values.defaultRules.runbookUrl }}/prometheus-operator/configreloadersidecarerrors
         summary: config-reloader sidecar has not had a successful reload for 10m
       expr: max_over_time(reloader_last_reload_successful{namespace=~".+"}[5m]) == 0
+      {{- if and .Values.customRules (index .Values.customRules "ConfigReloaderSidecarErrors") }}
+      for: {{ index .Values.customRules.ConfigReloaderSidecarErrors "for" | default "10m" }}
+      {{- else}}
       for: 10m
+      {{- end }}
       {{- with .Values.defaultRules.keepFiringFor }}
       keep_firing_for: "{{ . }}"
       {{- end }}
       labels:
+        {{- if and .Values.customRules (index .Values.customRules "ConfigReloaderSidecarErrors") }}
+        severity: {{ index .Values.customRules.ConfigReloaderSidecarErrors "labelsSeverity" | default "warning" }}
+        {{- else }}
         severity: warning
+        {{- end }}
       {{- if or .Values.defaultRules.additionalRuleLabels .Values.defaultRules.additionalRuleGroupLabels.configReloaders }}
         {{- with .Values.defaultRules.additionalRuleLabels }}
           {{- toYaml . | nindent 8 }}

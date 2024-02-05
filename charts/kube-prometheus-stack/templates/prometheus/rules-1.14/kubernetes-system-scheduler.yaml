@@ -38,12 +38,20 @@ spec:
         runbook_url: {{ .Values.defaultRules.runbookUrl }}/kubernetes/kubeschedulerdown
         summary: Target disappeared from Prometheus target discovery.
       expr: absent(up{job="kube-scheduler"} == 1)
+      {{- if and .Values.customRules (index .Values.customRules "KubeSchedulerDown") }}
+      for: {{ index .Values.customRules.KubeSchedulerDown "for" | default "15m" }}
+      {{- else}}
       for: 15m
+      {{- end }}
       {{- with .Values.defaultRules.keepFiringFor }}
       keep_firing_for: "{{ . }}"
       {{- end }}
       labels:
+        {{- if and .Values.customRules (index .Values.customRules "KubeSchedulerDown") }}
+        severity: {{ index .Values.customRules.KubeSchedulerDown "labelsSeverity" | default "critical" }}
+        {{- else }}
         severity: critical
+        {{- end }}
       {{- if or .Values.defaultRules.additionalRuleLabels .Values.defaultRules.additionalRuleGroupLabels.kubeSchedulerAlerting }}
         {{- with .Values.defaultRules.additionalRuleLabels }}
           {{- toYaml . | nindent 8 }}

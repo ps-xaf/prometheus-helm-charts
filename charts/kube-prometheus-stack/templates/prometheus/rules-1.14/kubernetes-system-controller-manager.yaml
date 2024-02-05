@@ -38,12 +38,20 @@ spec:
         runbook_url: {{ .Values.defaultRules.runbookUrl }}/kubernetes/kubecontrollermanagerdown
         summary: Target disappeared from Prometheus target discovery.
       expr: absent(up{job="kube-controller-manager"} == 1)
+      {{- if and .Values.customRules (index .Values.customRules "KubeControllerManagerDown") }}
+      for: {{ index .Values.customRules.KubeControllerManagerDown "for" | default "15m" }}
+      {{- else}}
       for: 15m
+      {{- end }}
       {{- with .Values.defaultRules.keepFiringFor }}
       keep_firing_for: "{{ . }}"
       {{- end }}
       labels:
+        {{- if and .Values.customRules (index .Values.customRules "KubeControllerManagerDown") }}
+        severity: {{ index .Values.customRules.KubeControllerManagerDown "labelsSeverity" | default "critical" }}
+        {{- else }}
         severity: critical
+        {{- end }}
       {{- if or .Values.defaultRules.additionalRuleLabels .Values.defaultRules.additionalRuleGroupLabels.kubeControllerManager }}
         {{- with .Values.defaultRules.additionalRuleLabels }}
           {{- toYaml . | nindent 8 }}

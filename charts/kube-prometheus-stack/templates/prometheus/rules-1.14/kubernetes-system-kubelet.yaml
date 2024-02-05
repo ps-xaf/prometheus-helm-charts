@@ -38,12 +38,20 @@ spec:
         runbook_url: {{ .Values.defaultRules.runbookUrl }}/kubernetes/kubenodenotready
         summary: Node is not ready.
       expr: kube_node_status_condition{job="{{ $kubeStateMetricsJob }}",condition="Ready",status="true"} == 0
+      {{- if and .Values.customRules (index .Values.customRules "KubeNodeNotReady") }}
+      for: {{ index .Values.customRules.KubeNodeNotReady "for" | default "15m" }}
+      {{- else}}
       for: 15m
+      {{- end }}
       {{- with .Values.defaultRules.keepFiringFor }}
       keep_firing_for: "{{ . }}"
       {{- end }}
       labels:
+        {{- if and .Values.customRules (index .Values.customRules "KubeNodeNotReady") }}
+        severity: {{ index .Values.customRules.KubeNodeNotReady "labelsSeverity" | default "warning" }}
+        {{- else }}
         severity: warning
+        {{- end }}
       {{- if or .Values.defaultRules.additionalRuleLabels .Values.defaultRules.additionalRuleGroupLabels.kubernetesSystem }}
         {{- with .Values.defaultRules.additionalRuleLabels }}
           {{- toYaml . | nindent 8 }}
@@ -66,12 +74,20 @@ spec:
         runbook_url: {{ .Values.defaultRules.runbookUrl }}/kubernetes/kubenodeunreachable
         summary: Node is unreachable.
       expr: (kube_node_spec_taint{job="{{ $kubeStateMetricsJob }}",key="node.kubernetes.io/unreachable",effect="NoSchedule"} unless ignoring(key,value) kube_node_spec_taint{job="{{ $kubeStateMetricsJob }}",key=~"ToBeDeletedByClusterAutoscaler|cloud.google.com/impending-node-termination|aws-node-termination-handler/spot-itn"}) == 1
+      {{- if and .Values.customRules (index .Values.customRules "KubeNodeUnreachable") }}
+      for: {{ index .Values.customRules.KubeNodeUnreachable "for" | default "15m" }}
+      {{- else}}
       for: 15m
+      {{- end }}
       {{- with .Values.defaultRules.keepFiringFor }}
       keep_firing_for: "{{ . }}"
       {{- end }}
       labels:
+        {{- if and .Values.customRules (index .Values.customRules "KubeNodeUnreachable") }}
+        severity: {{ index .Values.customRules.KubeNodeUnreachable "labelsSeverity" | default "warning" }}
+        {{- else }}
         severity: warning
+        {{- end }}
       {{- if or .Values.defaultRules.additionalRuleLabels .Values.defaultRules.additionalRuleGroupLabels.kubernetesSystem }}
         {{- with .Values.defaultRules.additionalRuleLabels }}
           {{- toYaml . | nindent 8 }}
@@ -101,12 +117,20 @@ spec:
         max by ({{ range $.Values.defaultRules.additionalAggregationLabels }}{{ . }},{{ end }}cluster, node) (
           kube_node_status_capacity{job="{{ $kubeStateMetricsJob }}",resource="pods"} != 1
         ) > 0.95
+      {{- if and .Values.customRules (index .Values.customRules "KubeletTooManyPods") }}
+      for: {{ index .Values.customRules.KubeletTooManyPods "for" | default "15m" }}
+      {{- else}}
       for: 15m
+      {{- end }}
       {{- with .Values.defaultRules.keepFiringFor }}
       keep_firing_for: "{{ . }}"
       {{- end }}
       labels:
+        {{- if and .Values.customRules (index .Values.customRules "KubeletTooManyPods") }}
+        severity: {{ index .Values.customRules.KubeletTooManyPods "labelsSeverity" | default "info" }}
+        {{- else }}
         severity: info
+        {{- end }}
       {{- if or .Values.defaultRules.additionalRuleLabels .Values.defaultRules.additionalRuleGroupLabels.kubernetesSystem }}
         {{- with .Values.defaultRules.additionalRuleLabels }}
           {{- toYaml . | nindent 8 }}
@@ -129,12 +153,20 @@ spec:
         runbook_url: {{ .Values.defaultRules.runbookUrl }}/kubernetes/kubenodereadinessflapping
         summary: Node readiness status is flapping.
       expr: sum(changes(kube_node_status_condition{job="{{ $kubeStateMetricsJob }}",status="true",condition="Ready"}[15m])) by ({{ range $.Values.defaultRules.additionalAggregationLabels }}{{ . }},{{ end }}cluster, node) > 2
+      {{- if and .Values.customRules (index .Values.customRules "KubeNodeReadinessFlapping") }}
+      for: {{ index .Values.customRules.KubeNodeReadinessFlapping "for" | default "15m" }}
+      {{- else}}
       for: 15m
+      {{- end }}
       {{- with .Values.defaultRules.keepFiringFor }}
       keep_firing_for: "{{ . }}"
       {{- end }}
       labels:
+        {{- if and .Values.customRules (index .Values.customRules "KubeNodeReadinessFlapping") }}
+        severity: {{ index .Values.customRules.KubeNodeReadinessFlapping "labelsSeverity" | default "warning" }}
+        {{- else }}
         severity: warning
+        {{- end }}
       {{- if or .Values.defaultRules.additionalRuleLabels .Values.defaultRules.additionalRuleGroupLabels.kubernetesSystem }}
         {{- with .Values.defaultRules.additionalRuleLabels }}
           {{- toYaml . | nindent 8 }}
@@ -157,12 +189,20 @@ spec:
         runbook_url: {{ .Values.defaultRules.runbookUrl }}/kubernetes/kubeletplegdurationhigh
         summary: Kubelet Pod Lifecycle Event Generator is taking too long to relist.
       expr: node_quantile:kubelet_pleg_relist_duration_seconds:histogram_quantile{quantile="0.99"} >= 10
+      {{- if and .Values.customRules (index .Values.customRules "KubeletPlegDurationHigh") }}
+      for: {{ index .Values.customRules.KubeletPlegDurationHigh "for" | default "5m" }}
+      {{- else}}
       for: 5m
+      {{- end }}
       {{- with .Values.defaultRules.keepFiringFor }}
       keep_firing_for: "{{ . }}"
       {{- end }}
       labels:
+        {{- if and .Values.customRules (index .Values.customRules "KubeletPlegDurationHigh") }}
+        severity: {{ index .Values.customRules.KubeletPlegDurationHigh "labelsSeverity" | default "warning" }}
+        {{- else }}
         severity: warning
+        {{- end }}
       {{- if or .Values.defaultRules.additionalRuleLabels .Values.defaultRules.additionalRuleGroupLabels.kubernetesSystem }}
         {{- with .Values.defaultRules.additionalRuleLabels }}
           {{- toYaml . | nindent 8 }}
@@ -185,12 +225,20 @@ spec:
         runbook_url: {{ .Values.defaultRules.runbookUrl }}/kubernetes/kubeletpodstartuplatencyhigh
         summary: Kubelet Pod startup latency is too high.
       expr: histogram_quantile(0.99, sum(rate(kubelet_pod_worker_duration_seconds_bucket{job="kubelet", metrics_path="/metrics"}[5m])) by ({{ range $.Values.defaultRules.additionalAggregationLabels }}{{ . }},{{ end }}cluster, instance, le)) * on ({{ range $.Values.defaultRules.additionalAggregationLabels }}{{ . }},{{ end }}cluster, instance) group_left(node) kubelet_node_name{job="kubelet", metrics_path="/metrics"} > 60
+      {{- if and .Values.customRules (index .Values.customRules "KubeletPodStartUpLatencyHigh") }}
+      for: {{ index .Values.customRules.KubeletPodStartUpLatencyHigh "for" | default "15m" }}
+      {{- else}}
       for: 15m
+      {{- end }}
       {{- with .Values.defaultRules.keepFiringFor }}
       keep_firing_for: "{{ . }}"
       {{- end }}
       labels:
+        {{- if and .Values.customRules (index .Values.customRules "KubeletPodStartUpLatencyHigh") }}
+        severity: {{ index .Values.customRules.KubeletPodStartUpLatencyHigh "labelsSeverity" | default "warning" }}
+        {{- else }}
         severity: warning
+        {{- end }}
       {{- if or .Values.defaultRules.additionalRuleLabels .Values.defaultRules.additionalRuleGroupLabels.kubernetesSystem }}
         {{- with .Values.defaultRules.additionalRuleLabels }}
           {{- toYaml . | nindent 8 }}
@@ -214,7 +262,11 @@ spec:
         summary: Kubelet client certificate is about to expire.
       expr: kubelet_certificate_manager_client_ttl_seconds < 604800
       labels:
+        {{- if and .Values.customRules (index .Values.customRules "KubeletClientCertificateExpiration") }}
+        severity: {{ index .Values.customRules.KubeletClientCertificateExpiration "labelsSeverity" | default "warning" }}
+        {{- else }}
         severity: warning
+        {{- end }}
       {{- if or .Values.defaultRules.additionalRuleLabels .Values.defaultRules.additionalRuleGroupLabels.kubernetesSystem }}
         {{- with .Values.defaultRules.additionalRuleLabels }}
           {{- toYaml . | nindent 8 }}
@@ -238,7 +290,11 @@ spec:
         summary: Kubelet client certificate is about to expire.
       expr: kubelet_certificate_manager_client_ttl_seconds < 86400
       labels:
+        {{- if and .Values.customRules (index .Values.customRules "KubeletClientCertificateExpiration") }}
+        severity: {{ index .Values.customRules.KubeletClientCertificateExpiration "labelsSeverity" | default "critical" }}
+        {{- else }}
         severity: critical
+        {{- end }}
       {{- if or .Values.defaultRules.additionalRuleLabels .Values.defaultRules.additionalRuleGroupLabels.kubernetesSystem }}
         {{- with .Values.defaultRules.additionalRuleLabels }}
           {{- toYaml . | nindent 8 }}
@@ -262,7 +318,11 @@ spec:
         summary: Kubelet server certificate is about to expire.
       expr: kubelet_certificate_manager_server_ttl_seconds < 604800
       labels:
+        {{- if and .Values.customRules (index .Values.customRules "KubeletServerCertificateExpiration") }}
+        severity: {{ index .Values.customRules.KubeletServerCertificateExpiration "labelsSeverity" | default "warning" }}
+        {{- else }}
         severity: warning
+        {{- end }}
       {{- if or .Values.defaultRules.additionalRuleLabels .Values.defaultRules.additionalRuleGroupLabels.kubernetesSystem }}
         {{- with .Values.defaultRules.additionalRuleLabels }}
           {{- toYaml . | nindent 8 }}
@@ -286,7 +346,11 @@ spec:
         summary: Kubelet server certificate is about to expire.
       expr: kubelet_certificate_manager_server_ttl_seconds < 86400
       labels:
+        {{- if and .Values.customRules (index .Values.customRules "KubeletServerCertificateExpiration") }}
+        severity: {{ index .Values.customRules.KubeletServerCertificateExpiration "labelsSeverity" | default "critical" }}
+        {{- else }}
         severity: critical
+        {{- end }}
       {{- if or .Values.defaultRules.additionalRuleLabels .Values.defaultRules.additionalRuleGroupLabels.kubernetesSystem }}
         {{- with .Values.defaultRules.additionalRuleLabels }}
           {{- toYaml . | nindent 8 }}
@@ -309,12 +373,20 @@ spec:
         runbook_url: {{ .Values.defaultRules.runbookUrl }}/kubernetes/kubeletclientcertificaterenewalerrors
         summary: Kubelet has failed to renew its client certificate.
       expr: increase(kubelet_certificate_manager_client_expiration_renew_errors[5m]) > 0
+      {{- if and .Values.customRules (index .Values.customRules "KubeletClientCertificateRenewalErrors") }}
+      for: {{ index .Values.customRules.KubeletClientCertificateRenewalErrors "for" | default "15m" }}
+      {{- else}}
       for: 15m
+      {{- end }}
       {{- with .Values.defaultRules.keepFiringFor }}
       keep_firing_for: "{{ . }}"
       {{- end }}
       labels:
+        {{- if and .Values.customRules (index .Values.customRules "KubeletClientCertificateRenewalErrors") }}
+        severity: {{ index .Values.customRules.KubeletClientCertificateRenewalErrors "labelsSeverity" | default "warning" }}
+        {{- else }}
         severity: warning
+        {{- end }}
       {{- if or .Values.defaultRules.additionalRuleLabels .Values.defaultRules.additionalRuleGroupLabels.kubernetesSystem }}
         {{- with .Values.defaultRules.additionalRuleLabels }}
           {{- toYaml . | nindent 8 }}
@@ -337,12 +409,20 @@ spec:
         runbook_url: {{ .Values.defaultRules.runbookUrl }}/kubernetes/kubeletservercertificaterenewalerrors
         summary: Kubelet has failed to renew its server certificate.
       expr: increase(kubelet_server_expiration_renew_errors[5m]) > 0
+      {{- if and .Values.customRules (index .Values.customRules "KubeletServerCertificateRenewalErrors") }}
+      for: {{ index .Values.customRules.KubeletServerCertificateRenewalErrors "for" | default "15m" }}
+      {{- else}}
       for: 15m
+      {{- end }}
       {{- with .Values.defaultRules.keepFiringFor }}
       keep_firing_for: "{{ . }}"
       {{- end }}
       labels:
+        {{- if and .Values.customRules (index .Values.customRules "KubeletServerCertificateRenewalErrors") }}
+        severity: {{ index .Values.customRules.KubeletServerCertificateRenewalErrors "labelsSeverity" | default "warning" }}
+        {{- else }}
         severity: warning
+        {{- end }}
       {{- if or .Values.defaultRules.additionalRuleLabels .Values.defaultRules.additionalRuleGroupLabels.kubernetesSystem }}
         {{- with .Values.defaultRules.additionalRuleLabels }}
           {{- toYaml . | nindent 8 }}
@@ -366,12 +446,20 @@ spec:
         runbook_url: {{ .Values.defaultRules.runbookUrl }}/kubernetes/kubeletdown
         summary: Target disappeared from Prometheus target discovery.
       expr: absent(up{job="kubelet", metrics_path="/metrics"} == 1)
+      {{- if and .Values.customRules (index .Values.customRules "KubeletDown") }}
+      for: {{ index .Values.customRules.KubeletDown "for" | default "15m" }}
+      {{- else}}
       for: 15m
+      {{- end }}
       {{- with .Values.defaultRules.keepFiringFor }}
       keep_firing_for: "{{ . }}"
       {{- end }}
       labels:
+        {{- if and .Values.customRules (index .Values.customRules "KubeletDown") }}
+        severity: {{ index .Values.customRules.KubeletDown "labelsSeverity" | default "critical" }}
+        {{- else }}
         severity: critical
+        {{- end }}
       {{- if or .Values.defaultRules.additionalRuleLabels .Values.defaultRules.additionalRuleGroupLabels.kubernetesSystem }}
         {{- with .Values.defaultRules.additionalRuleLabels }}
           {{- toYaml . | nindent 8 }}

@@ -44,12 +44,20 @@ spec:
         and
           node_filesystem_readonly{job="node-exporter",fstype!="",mountpoint!=""} == 0
         )
+      {{- if and .Values.customRules (index .Values.customRules "NodeFilesystemSpaceFillingUp") }}
+      for: {{ index .Values.customRules.NodeFilesystemSpaceFillingUp "for" | default "1h" }}
+      {{- else}}
       for: 1h
+      {{- end }}
       {{- with .Values.defaultRules.keepFiringFor }}
       keep_firing_for: "{{ . }}"
       {{- end }}
       labels:
+        {{- if and .Values.customRules (index .Values.customRules "NodeFilesystemSpaceFillingUp") }}
+        severity: {{ index .Values.customRules.NodeFilesystemSpaceFillingUp "labelsSeverity" | default "warning" }}
+        {{- else }}
         severity: warning
+        {{- end }}
       {{- if or .Values.defaultRules.additionalRuleLabels .Values.defaultRules.additionalRuleGroupLabels.nodeExporterAlerting }}
         {{- with .Values.defaultRules.additionalRuleLabels }}
           {{- toYaml . | nindent 8 }}
@@ -79,12 +87,20 @@ spec:
         and
           node_filesystem_readonly{job="node-exporter",fstype!="",mountpoint!=""} == 0
         )
+      {{- if and .Values.customRules (index .Values.customRules "NodeFilesystemSpaceFillingUp") }}
+      for: {{ index .Values.customRules.NodeFilesystemSpaceFillingUp "for" | default "1h" }}
+      {{- else}}
       for: 1h
+      {{- end }}
       {{- with .Values.defaultRules.keepFiringFor }}
       keep_firing_for: "{{ . }}"
       {{- end }}
       labels:
+        {{- if and .Values.customRules (index .Values.customRules "NodeFilesystemSpaceFillingUp") }}
+        severity: {{ index .Values.customRules.NodeFilesystemSpaceFillingUp "labelsSeverity" | default "critical" }}
+        {{- else }}
         severity: critical
+        {{- end }}
       {{- if or .Values.defaultRules.additionalRuleLabels .Values.defaultRules.additionalRuleGroupLabels.nodeExporterAlerting }}
         {{- with .Values.defaultRules.additionalRuleLabels }}
           {{- toYaml . | nindent 8 }}
@@ -112,12 +128,20 @@ spec:
         and
           node_filesystem_readonly{job="node-exporter",fstype!="",mountpoint!=""} == 0
         )
+      {{- if and .Values.customRules (index .Values.customRules "NodeFilesystemAlmostOutOfSpace") }}
+      for: {{ index .Values.customRules.NodeFilesystemAlmostOutOfSpace "for" | default "30m" }}
+      {{- else}}
       for: 30m
+      {{- end }}
       {{- with .Values.defaultRules.keepFiringFor }}
       keep_firing_for: "{{ . }}"
       {{- end }}
       labels:
+        {{- if and .Values.customRules (index .Values.customRules "NodeFilesystemAlmostOutOfSpace") }}
+        severity: {{ index .Values.customRules.NodeFilesystemAlmostOutOfSpace "labelsSeverity" | default "warning" }}
+        {{- else }}
         severity: warning
+        {{- end }}
       {{- if or .Values.defaultRules.additionalRuleLabels .Values.defaultRules.additionalRuleGroupLabels.nodeExporterAlerting }}
         {{- with .Values.defaultRules.additionalRuleLabels }}
           {{- toYaml . | nindent 8 }}
@@ -145,12 +169,20 @@ spec:
         and
           node_filesystem_readonly{job="node-exporter",fstype!="",mountpoint!=""} == 0
         )
+      {{- if and .Values.customRules (index .Values.customRules "NodeFilesystemAlmostOutOfSpace") }}
+      for: {{ index .Values.customRules.NodeFilesystemAlmostOutOfSpace "for" | default "30m" }}
+      {{- else}}
       for: 30m
+      {{- end }}
       {{- with .Values.defaultRules.keepFiringFor }}
       keep_firing_for: "{{ . }}"
       {{- end }}
       labels:
+        {{- if and .Values.customRules (index .Values.customRules "NodeFilesystemAlmostOutOfSpace") }}
+        severity: {{ index .Values.customRules.NodeFilesystemAlmostOutOfSpace "labelsSeverity" | default "critical" }}
+        {{- else }}
         severity: critical
+        {{- end }}
       {{- if or .Values.defaultRules.additionalRuleLabels .Values.defaultRules.additionalRuleGroupLabels.nodeExporterAlerting }}
         {{- with .Values.defaultRules.additionalRuleLabels }}
           {{- toYaml . | nindent 8 }}
@@ -180,12 +212,20 @@ spec:
         and
           node_filesystem_readonly{job="node-exporter",fstype!="",mountpoint!=""} == 0
         )
+      {{- if and .Values.customRules (index .Values.customRules "NodeFilesystemFilesFillingUp") }}
+      for: {{ index .Values.customRules.NodeFilesystemFilesFillingUp "for" | default "1h" }}
+      {{- else}}
       for: 1h
+      {{- end }}
       {{- with .Values.defaultRules.keepFiringFor }}
       keep_firing_for: "{{ . }}"
       {{- end }}
       labels:
+        {{- if and .Values.customRules (index .Values.customRules "NodeFilesystemFilesFillingUp") }}
+        severity: {{ index .Values.customRules.NodeFilesystemFilesFillingUp "labelsSeverity" | default "warning" }}
+        {{- else }}
         severity: warning
+        {{- end }}
       {{- if or .Values.defaultRules.additionalRuleLabels .Values.defaultRules.additionalRuleGroupLabels.nodeExporterAlerting }}
         {{- with .Values.defaultRules.additionalRuleLabels }}
           {{- toYaml . | nindent 8 }}
@@ -215,12 +255,20 @@ spec:
         and
           node_filesystem_readonly{job="node-exporter",fstype!="",mountpoint!=""} == 0
         )
+      {{- if and .Values.customRules (index .Values.customRules "NodeFilesystemFilesFillingUp") }}
+      for: {{ index .Values.customRules.NodeFilesystemFilesFillingUp "for" | default "1h" }}
+      {{- else}}
       for: 1h
+      {{- end }}
       {{- with .Values.defaultRules.keepFiringFor }}
       keep_firing_for: "{{ . }}"
       {{- end }}
       labels:
+        {{- if and .Values.customRules (index .Values.customRules "NodeFilesystemFilesFillingUp") }}
+        severity: {{ index .Values.customRules.NodeFilesystemFilesFillingUp "labelsSeverity" | default "critical" }}
+        {{- else }}
         severity: critical
+        {{- end }}
       {{- if or .Values.defaultRules.additionalRuleLabels .Values.defaultRules.additionalRuleGroupLabels.nodeExporterAlerting }}
         {{- with .Values.defaultRules.additionalRuleLabels }}
           {{- toYaml . | nindent 8 }}
@@ -248,12 +296,20 @@ spec:
         and
           node_filesystem_readonly{job="node-exporter",fstype!="",mountpoint!=""} == 0
         )
+      {{- if and .Values.customRules (index .Values.customRules "NodeFilesystemAlmostOutOfFiles") }}
+      for: {{ index .Values.customRules.NodeFilesystemAlmostOutOfFiles "for" | default "1h" }}
+      {{- else}}
       for: 1h
+      {{- end }}
       {{- with .Values.defaultRules.keepFiringFor }}
       keep_firing_for: "{{ . }}"
       {{- end }}
       labels:
+        {{- if and .Values.customRules (index .Values.customRules "NodeFilesystemAlmostOutOfFiles") }}
+        severity: {{ index .Values.customRules.NodeFilesystemAlmostOutOfFiles "labelsSeverity" | default "warning" }}
+        {{- else }}
         severity: warning
+        {{- end }}
       {{- if or .Values.defaultRules.additionalRuleLabels .Values.defaultRules.additionalRuleGroupLabels.nodeExporterAlerting }}
         {{- with .Values.defaultRules.additionalRuleLabels }}
           {{- toYaml . | nindent 8 }}
@@ -281,12 +337,20 @@ spec:
         and
           node_filesystem_readonly{job="node-exporter",fstype!="",mountpoint!=""} == 0
         )
+      {{- if and .Values.customRules (index .Values.customRules "NodeFilesystemAlmostOutOfFiles") }}
+      for: {{ index .Values.customRules.NodeFilesystemAlmostOutOfFiles "for" | default "1h" }}
+      {{- else}}
       for: 1h
+      {{- end }}
       {{- with .Values.defaultRules.keepFiringFor }}
       keep_firing_for: "{{ . }}"
       {{- end }}
       labels:
+        {{- if and .Values.customRules (index .Values.customRules "NodeFilesystemAlmostOutOfFiles") }}
+        severity: {{ index .Values.customRules.NodeFilesystemAlmostOutOfFiles "labelsSeverity" | default "critical" }}
+        {{- else }}
         severity: critical
+        {{- end }}
       {{- if or .Values.defaultRules.additionalRuleLabels .Values.defaultRules.additionalRuleGroupLabels.nodeExporterAlerting }}
         {{- with .Values.defaultRules.additionalRuleLabels }}
           {{- toYaml . | nindent 8 }}
@@ -309,12 +373,20 @@ spec:
         runbook_url: {{ .Values.defaultRules.runbookUrl }}/node/nodenetworkreceiveerrs
         summary: Network interface is reporting many receive errors.
       expr: rate(node_network_receive_errs_total{job="node-exporter"}[2m]) / rate(node_network_receive_packets_total{job="node-exporter"}[2m]) > 0.01
+      {{- if and .Values.customRules (index .Values.customRules "NodeNetworkReceiveErrs") }}
+      for: {{ index .Values.customRules.NodeNetworkReceiveErrs "for" | default "1h" }}
+      {{- else}}
       for: 1h
+      {{- end }}
       {{- with .Values.defaultRules.keepFiringFor }}
       keep_firing_for: "{{ . }}"
       {{- end }}
       labels:
+        {{- if and .Values.customRules (index .Values.customRules "NodeNetworkReceiveErrs") }}
+        severity: {{ index .Values.customRules.NodeNetworkReceiveErrs "labelsSeverity" | default "warning" }}
+        {{- else }}
         severity: warning
+        {{- end }}
       {{- if or .Values.defaultRules.additionalRuleLabels .Values.defaultRules.additionalRuleGroupLabels.nodeExporterAlerting }}
         {{- with .Values.defaultRules.additionalRuleLabels }}
           {{- toYaml . | nindent 8 }}
@@ -337,12 +409,20 @@ spec:
         runbook_url: {{ .Values.defaultRules.runbookUrl }}/node/nodenetworktransmiterrs
         summary: Network interface is reporting many transmit errors.
       expr: rate(node_network_transmit_errs_total{job="node-exporter"}[2m]) / rate(node_network_transmit_packets_total{job="node-exporter"}[2m]) > 0.01
+      {{- if and .Values.customRules (index .Values.customRules "NodeNetworkTransmitErrs") }}
+      for: {{ index .Values.customRules.NodeNetworkTransmitErrs "for" | default "1h" }}
+      {{- else}}
       for: 1h
+      {{- end }}
       {{- with .Values.defaultRules.keepFiringFor }}
       keep_firing_for: "{{ . }}"
       {{- end }}
       labels:
+        {{- if and .Values.customRules (index .Values.customRules "NodeNetworkTransmitErrs") }}
+        severity: {{ index .Values.customRules.NodeNetworkTransmitErrs "labelsSeverity" | default "warning" }}
+        {{- else }}
         severity: warning
+        {{- end }}
       {{- if or .Values.defaultRules.additionalRuleLabels .Values.defaultRules.additionalRuleGroupLabels.nodeExporterAlerting }}
         {{- with .Values.defaultRules.additionalRuleLabels }}
           {{- toYaml . | nindent 8 }}
@@ -366,7 +446,11 @@ spec:
         summary: Number of conntrack are getting close to the limit.
       expr: (node_nf_conntrack_entries{job="node-exporter"} / node_nf_conntrack_entries_limit) > 0.75
       labels:
+        {{- if and .Values.customRules (index .Values.customRules "NodeHighNumberConntrackEntriesUsed") }}
+        severity: {{ index .Values.customRules.NodeHighNumberConntrackEntriesUsed "labelsSeverity" | default "warning" }}
+        {{- else }}
         severity: warning
+        {{- end }}
       {{- if or .Values.defaultRules.additionalRuleLabels .Values.defaultRules.additionalRuleGroupLabels.nodeExporterAlerting }}
         {{- with .Values.defaultRules.additionalRuleLabels }}
           {{- toYaml . | nindent 8 }}
@@ -390,7 +474,11 @@ spec:
         summary: Node Exporter text file collector failed to scrape.
       expr: node_textfile_scrape_error{job="node-exporter"} == 1
       labels:
+        {{- if and .Values.customRules (index .Values.customRules "NodeTextFileCollectorScrapeError") }}
+        severity: {{ index .Values.customRules.NodeTextFileCollectorScrapeError "labelsSeverity" | default "warning" }}
+        {{- else }}
         severity: warning
+        {{- end }}
       {{- if or .Values.defaultRules.additionalRuleLabels .Values.defaultRules.additionalRuleGroupLabels.nodeExporterAlerting }}
         {{- with .Values.defaultRules.additionalRuleLabels }}
           {{- toYaml . | nindent 8 }}
@@ -424,12 +512,20 @@ spec:
         and
           deriv(node_timex_offset_seconds{job="node-exporter"}[5m]) <= 0
         )
+      {{- if and .Values.customRules (index .Values.customRules "NodeClockSkewDetected") }}
+      for: {{ index .Values.customRules.NodeClockSkewDetected "for" | default "10m" }}
+      {{- else}}
       for: 10m
+      {{- end }}
       {{- with .Values.defaultRules.keepFiringFor }}
       keep_firing_for: "{{ . }}"
       {{- end }}
       labels:
+        {{- if and .Values.customRules (index .Values.customRules "NodeClockSkewDetected") }}
+        severity: {{ index .Values.customRules.NodeClockSkewDetected "labelsSeverity" | default "warning" }}
+        {{- else }}
         severity: warning
+        {{- end }}
       {{- if or .Values.defaultRules.additionalRuleLabels .Values.defaultRules.additionalRuleGroupLabels.nodeExporterAlerting }}
         {{- with .Values.defaultRules.additionalRuleLabels }}
           {{- toYaml . | nindent 8 }}
@@ -455,12 +551,20 @@ spec:
         min_over_time(node_timex_sync_status{job="node-exporter"}[5m]) == 0
         and
         node_timex_maxerror_seconds{job="node-exporter"} >= 16
+      {{- if and .Values.customRules (index .Values.customRules "NodeClockNotSynchronising") }}
+      for: {{ index .Values.customRules.NodeClockNotSynchronising "for" | default "10m" }}
+      {{- else}}
       for: 10m
+      {{- end }}
       {{- with .Values.defaultRules.keepFiringFor }}
       keep_firing_for: "{{ . }}"
       {{- end }}
       labels:
+        {{- if and .Values.customRules (index .Values.customRules "NodeClockNotSynchronising") }}
+        severity: {{ index .Values.customRules.NodeClockNotSynchronising "labelsSeverity" | default "warning" }}
+        {{- else }}
         severity: warning
+        {{- end }}
       {{- if or .Values.defaultRules.additionalRuleLabels .Values.defaultRules.additionalRuleGroupLabels.nodeExporterAlerting }}
         {{- with .Values.defaultRules.additionalRuleLabels }}
           {{- toYaml . | nindent 8 }}
@@ -483,12 +587,20 @@ spec:
         runbook_url: {{ .Values.defaultRules.runbookUrl }}/node/noderaiddegraded
         summary: RAID Array is degraded.
       expr: node_md_disks_required{job="node-exporter",device=~"(/dev/)?(mmcblk.p.+|nvme.+|rbd.+|sd.+|vd.+|xvd.+|dm-.+|md.+|dasd.+)"} - ignoring (state) (node_md_disks{state="active",job="node-exporter",device=~"(/dev/)?(mmcblk.p.+|nvme.+|rbd.+|sd.+|vd.+|xvd.+|dm-.+|md.+|dasd.+)"}) > 0
+      {{- if and .Values.customRules (index .Values.customRules "NodeRAIDDegraded") }}
+      for: {{ index .Values.customRules.NodeRAIDDegraded "for" | default "15m" }}
+      {{- else}}
       for: 15m
+      {{- end }}
       {{- with .Values.defaultRules.keepFiringFor }}
       keep_firing_for: "{{ . }}"
       {{- end }}
       labels:
+        {{- if and .Values.customRules (index .Values.customRules "NodeRAIDDegraded") }}
+        severity: {{ index .Values.customRules.NodeRAIDDegraded "labelsSeverity" | default "critical" }}
+        {{- else }}
         severity: critical
+        {{- end }}
       {{- if or .Values.defaultRules.additionalRuleLabels .Values.defaultRules.additionalRuleGroupLabels.nodeExporterAlerting }}
         {{- with .Values.defaultRules.additionalRuleLabels }}
           {{- toYaml . | nindent 8 }}
@@ -512,7 +624,11 @@ spec:
         summary: Failed device in RAID array.
       expr: node_md_disks{state="failed",job="node-exporter",device=~"(/dev/)?(mmcblk.p.+|nvme.+|rbd.+|sd.+|vd.+|xvd.+|dm-.+|md.+|dasd.+)"} > 0
       labels:
+        {{- if and .Values.customRules (index .Values.customRules "NodeRAIDDiskFailure") }}
+        severity: {{ index .Values.customRules.NodeRAIDDiskFailure "labelsSeverity" | default "warning" }}
+        {{- else }}
         severity: warning
+        {{- end }}
       {{- if or .Values.defaultRules.additionalRuleLabels .Values.defaultRules.additionalRuleGroupLabels.nodeExporterAlerting }}
         {{- with .Values.defaultRules.additionalRuleLabels }}
           {{- toYaml . | nindent 8 }}
@@ -538,12 +654,20 @@ spec:
         (
           node_filefd_allocated{job="node-exporter"} * 100 / node_filefd_maximum{job="node-exporter"} > 70
         )
+      {{- if and .Values.customRules (index .Values.customRules "NodeFileDescriptorLimit") }}
+      for: {{ index .Values.customRules.NodeFileDescriptorLimit "for" | default "15m" }}
+      {{- else}}
       for: 15m
+      {{- end }}
       {{- with .Values.defaultRules.keepFiringFor }}
       keep_firing_for: "{{ . }}"
       {{- end }}
       labels:
+        {{- if and .Values.customRules (index .Values.customRules "NodeFileDescriptorLimit") }}
+        severity: {{ index .Values.customRules.NodeFileDescriptorLimit "labelsSeverity" | default "warning" }}
+        {{- else }}
         severity: warning
+        {{- end }}
       {{- if or .Values.defaultRules.additionalRuleLabels .Values.defaultRules.additionalRuleGroupLabels.nodeExporterAlerting }}
         {{- with .Values.defaultRules.additionalRuleLabels }}
           {{- toYaml . | nindent 8 }}
@@ -569,12 +693,20 @@ spec:
         (
           node_filefd_allocated{job="node-exporter"} * 100 / node_filefd_maximum{job="node-exporter"} > 90
         )
+      {{- if and .Values.customRules (index .Values.customRules "NodeFileDescriptorLimit") }}
+      for: {{ index .Values.customRules.NodeFileDescriptorLimit "for" | default "15m" }}
+      {{- else}}
       for: 15m
+      {{- end }}
       {{- with .Values.defaultRules.keepFiringFor }}
       keep_firing_for: "{{ . }}"
       {{- end }}
       labels:
+        {{- if and .Values.customRules (index .Values.customRules "NodeFileDescriptorLimit") }}
+        severity: {{ index .Values.customRules.NodeFileDescriptorLimit "labelsSeverity" | default "critical" }}
+        {{- else }}
         severity: critical
+        {{- end }}
       {{- if or .Values.defaultRules.additionalRuleLabels .Values.defaultRules.additionalRuleGroupLabels.nodeExporterAlerting }}
         {{- with .Values.defaultRules.additionalRuleLabels }}
           {{- toYaml . | nindent 8 }}
@@ -599,12 +731,20 @@ spec:
         runbook_url: {{ .Values.defaultRules.runbookUrl }}/node/nodecpuhighusage
         summary: High CPU usage.
       expr: sum without(mode) (avg without (cpu) (rate(node_cpu_seconds_total{job="node-exporter", mode!="idle"}[2m]))) * 100 > 90
+      {{- if and .Values.customRules (index .Values.customRules "NodeCPUHighUsage") }}
+      for: {{ index .Values.customRules.NodeCPUHighUsage "for" | default "15m" }}
+      {{- else}}
       for: 15m
+      {{- end }}
       {{- with .Values.defaultRules.keepFiringFor }}
       keep_firing_for: "{{ . }}"
       {{- end }}
       labels:
+        {{- if and .Values.customRules (index .Values.customRules "NodeCPUHighUsage") }}
+        severity: {{ index .Values.customRules.NodeCPUHighUsage "labelsSeverity" | default "info" }}
+        {{- else }}
         severity: info
+        {{- end }}
       {{- if or .Values.defaultRules.additionalRuleLabels .Values.defaultRules.additionalRuleGroupLabels.nodeExporterAlerting }}
         {{- with .Values.defaultRules.additionalRuleLabels }}
           {{- toYaml . | nindent 8 }}
@@ -633,12 +773,20 @@ spec:
       expr: |-
         node_load1{job="node-exporter"}
         / count without (cpu, mode) (node_cpu_seconds_total{job="node-exporter", mode="idle"}) > 2
+      {{- if and .Values.customRules (index .Values.customRules "NodeSystemSaturation") }}
+      for: {{ index .Values.customRules.NodeSystemSaturation "for" | default "15m" }}
+      {{- else}}
       for: 15m
+      {{- end }}
       {{- with .Values.defaultRules.keepFiringFor }}
       keep_firing_for: "{{ . }}"
       {{- end }}
       labels:
+        {{- if and .Values.customRules (index .Values.customRules "NodeSystemSaturation") }}
+        severity: {{ index .Values.customRules.NodeSystemSaturation "labelsSeverity" | default "warning" }}
+        {{- else }}
         severity: warning
+        {{- end }}
       {{- if or .Values.defaultRules.additionalRuleLabels .Values.defaultRules.additionalRuleGroupLabels.nodeExporterAlerting }}
         {{- with .Values.defaultRules.additionalRuleLabels }}
           {{- toYaml . | nindent 8 }}
@@ -665,12 +813,20 @@ spec:
         runbook_url: {{ .Values.defaultRules.runbookUrl }}/node/nodememorymajorpagesfaults
         summary: Memory major page faults are occurring at very high rate.
       expr: rate(node_vmstat_pgmajfault{job="node-exporter"}[5m]) > 500
+      {{- if and .Values.customRules (index .Values.customRules "NodeMemoryMajorPagesFaults") }}
+      for: {{ index .Values.customRules.NodeMemoryMajorPagesFaults "for" | default "15m" }}
+      {{- else}}
       for: 15m
+      {{- end }}
       {{- with .Values.defaultRules.keepFiringFor }}
       keep_firing_for: "{{ . }}"
       {{- end }}
       labels:
+        {{- if and .Values.customRules (index .Values.customRules "NodeMemoryMajorPagesFaults") }}
+        severity: {{ index .Values.customRules.NodeMemoryMajorPagesFaults "labelsSeverity" | default "warning" }}
+        {{- else }}
         severity: warning
+        {{- end }}
       {{- if or .Values.defaultRules.additionalRuleLabels .Values.defaultRules.additionalRuleGroupLabels.nodeExporterAlerting }}
         {{- with .Values.defaultRules.additionalRuleLabels }}
           {{- toYaml . | nindent 8 }}
@@ -695,12 +851,20 @@ spec:
         runbook_url: {{ .Values.defaultRules.runbookUrl }}/node/nodememoryhighutilization
         summary: Host is running out of memory.
       expr: 100 - (node_memory_MemAvailable_bytes{job="node-exporter"} / node_memory_MemTotal_bytes{job="node-exporter"} * 100) > 90
+      {{- if and .Values.customRules (index .Values.customRules "NodeMemoryHighUtilization") }}
+      for: {{ index .Values.customRules.NodeMemoryHighUtilization "for" | default "15m" }}
+      {{- else}}
       for: 15m
+      {{- end }}
       {{- with .Values.defaultRules.keepFiringFor }}
       keep_firing_for: "{{ . }}"
       {{- end }}
       labels:
+        {{- if and .Values.customRules (index .Values.customRules "NodeMemoryHighUtilization") }}
+        severity: {{ index .Values.customRules.NodeMemoryHighUtilization "labelsSeverity" | default "warning" }}
+        {{- else }}
         severity: warning
+        {{- end }}
       {{- if or .Values.defaultRules.additionalRuleLabels .Values.defaultRules.additionalRuleGroupLabels.nodeExporterAlerting }}
         {{- with .Values.defaultRules.additionalRuleLabels }}
           {{- toYaml . | nindent 8 }}
@@ -727,12 +891,20 @@ spec:
         runbook_url: {{ .Values.defaultRules.runbookUrl }}/node/nodediskiosaturation
         summary: Disk IO queue is high.
       expr: rate(node_disk_io_time_weighted_seconds_total{job="node-exporter", device=~"(/dev/)?(mmcblk.p.+|nvme.+|rbd.+|sd.+|vd.+|xvd.+|dm-.+|md.+|dasd.+)"}[5m]) > 10
+      {{- if and .Values.customRules (index .Values.customRules "NodeDiskIOSaturation") }}
+      for: {{ index .Values.customRules.NodeDiskIOSaturation "for" | default "30m" }}
+      {{- else}}
       for: 30m
+      {{- end }}
       {{- with .Values.defaultRules.keepFiringFor }}
       keep_firing_for: "{{ . }}"
       {{- end }}
       labels:
+        {{- if and .Values.customRules (index .Values.customRules "NodeDiskIOSaturation") }}
+        severity: {{ index .Values.customRules.NodeDiskIOSaturation "labelsSeverity" | default "warning" }}
+        {{- else }}
         severity: warning
+        {{- end }}
       {{- if or .Values.defaultRules.additionalRuleLabels .Values.defaultRules.additionalRuleGroupLabels.nodeExporterAlerting }}
         {{- with .Values.defaultRules.additionalRuleLabels }}
           {{- toYaml . | nindent 8 }}
@@ -755,12 +927,20 @@ spec:
         runbook_url: {{ .Values.defaultRules.runbookUrl }}/node/nodesystemdservicefailed
         summary: Systemd service has entered failed state.
       expr: node_systemd_unit_state{job="node-exporter", state="failed"} == 1
+      {{- if and .Values.customRules (index .Values.customRules "NodeSystemdServiceFailed") }}
+      for: {{ index .Values.customRules.NodeSystemdServiceFailed "for" | default "5m" }}
+      {{- else}}
       for: 5m
+      {{- end }}
       {{- with .Values.defaultRules.keepFiringFor }}
       keep_firing_for: "{{ . }}"
       {{- end }}
       labels:
+        {{- if and .Values.customRules (index .Values.customRules "NodeSystemdServiceFailed") }}
+        severity: {{ index .Values.customRules.NodeSystemdServiceFailed "labelsSeverity" | default "warning" }}
+        {{- else }}
         severity: warning
+        {{- end }}
       {{- if or .Values.defaultRules.additionalRuleLabels .Values.defaultRules.additionalRuleGroupLabels.nodeExporterAlerting }}
         {{- with .Values.defaultRules.additionalRuleLabels }}
           {{- toYaml . | nindent 8 }}
@@ -783,12 +963,20 @@ spec:
         runbook_url: {{ .Values.defaultRules.runbookUrl }}/node/nodebondingdegraded
         summary: Bonding interface is degraded
       expr: (node_bonding_slaves - node_bonding_active) != 0
+      {{- if and .Values.customRules (index .Values.customRules "NodeBondingDegraded") }}
+      for: {{ index .Values.customRules.NodeBondingDegraded "for" | default "5m" }}
+      {{- else}}
       for: 5m
+      {{- end }}
       {{- with .Values.defaultRules.keepFiringFor }}
       keep_firing_for: "{{ . }}"
       {{- end }}
       labels:
+        {{- if and .Values.customRules (index .Values.customRules "NodeBondingDegraded") }}
+        severity: {{ index .Values.customRules.NodeBondingDegraded "labelsSeverity" | default "warning" }}
+        {{- else }}
         severity: warning
+        {{- end }}
       {{- if or .Values.defaultRules.additionalRuleLabels .Values.defaultRules.additionalRuleGroupLabels.nodeExporterAlerting }}
         {{- with .Values.defaultRules.additionalRuleLabels }}
           {{- toYaml . | nindent 8 }}

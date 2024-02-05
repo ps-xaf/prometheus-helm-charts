@@ -39,12 +39,20 @@ spec:
         runbook_url: {{ .Values.defaultRules.runbookUrl }}/kubernetes/kubeproxydown
         summary: Target disappeared from Prometheus target discovery.
       expr: absent(up{job="kube-proxy"} == 1)
+      {{- if and .Values.customRules (index .Values.customRules "KubeProxyDown") }}
+      for: {{ index .Values.customRules.KubeProxyDown "for" | default "15m" }}
+      {{- else}}
       for: 15m
+      {{- end }}
       {{- with .Values.defaultRules.keepFiringFor }}
       keep_firing_for: "{{ . }}"
       {{- end }}
       labels:
+        {{- if and .Values.customRules (index .Values.customRules "KubeProxyDown") }}
+        severity: {{ index .Values.customRules.KubeProxyDown "labelsSeverity" | default "critical" }}
+        {{- else }}
         severity: critical
+        {{- end }}
       {{- if or .Values.defaultRules.additionalRuleLabels .Values.defaultRules.additionalRuleGroupLabels.kubeProxy }}
         {{- with .Values.defaultRules.additionalRuleLabels }}
           {{- toYaml . | nindent 8 }}

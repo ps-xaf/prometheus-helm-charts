@@ -50,12 +50,20 @@ spec:
         kube_persistentvolumeclaim_access_mode{ access_mode="ReadOnlyMany"} == 1
         unless on ({{ range $.Values.defaultRules.additionalAggregationLabels }}{{ . }},{{ end }}cluster, namespace, persistentvolumeclaim)
         kube_persistentvolumeclaim_labels{label_excluded_from_alerts="true"} == 1
+      {{- if and .Values.customRules (index .Values.customRules "KubePersistentVolumeFillingUp") }}
+      for: {{ index .Values.customRules.KubePersistentVolumeFillingUp "for" | default "1m" }}
+      {{- else}}
       for: 1m
+      {{- end }}
       {{- with .Values.defaultRules.keepFiringFor }}
       keep_firing_for: "{{ . }}"
       {{- end }}
       labels:
+        {{- if and .Values.customRules (index .Values.customRules "KubePersistentVolumeFillingUp") }}
+        severity: {{ index .Values.customRules.KubePersistentVolumeFillingUp "labelsSeverity" | default "critical" }}
+        {{- else }}
         severity: critical
+        {{- end }}
       {{- if or .Values.defaultRules.additionalRuleLabels .Values.defaultRules.additionalRuleGroupLabels.kubernetesStorage }}
         {{- with .Values.defaultRules.additionalRuleLabels }}
           {{- toYaml . | nindent 8 }}
@@ -91,12 +99,20 @@ spec:
         kube_persistentvolumeclaim_access_mode{ access_mode="ReadOnlyMany"} == 1
         unless on ({{ range $.Values.defaultRules.additionalAggregationLabels }}{{ . }},{{ end }}cluster, namespace, persistentvolumeclaim)
         kube_persistentvolumeclaim_labels{label_excluded_from_alerts="true"} == 1
+      {{- if and .Values.customRules (index .Values.customRules "KubePersistentVolumeFillingUp") }}
+      for: {{ index .Values.customRules.KubePersistentVolumeFillingUp "for" | default "1h" }}
+      {{- else}}
       for: 1h
+      {{- end }}
       {{- with .Values.defaultRules.keepFiringFor }}
       keep_firing_for: "{{ . }}"
       {{- end }}
       labels:
+        {{- if and .Values.customRules (index .Values.customRules "KubePersistentVolumeFillingUp") }}
+        severity: {{ index .Values.customRules.KubePersistentVolumeFillingUp "labelsSeverity" | default "warning" }}
+        {{- else }}
         severity: warning
+        {{- end }}
       {{- if or .Values.defaultRules.additionalRuleLabels .Values.defaultRules.additionalRuleGroupLabels.kubernetesStorage }}
         {{- with .Values.defaultRules.additionalRuleLabels }}
           {{- toYaml . | nindent 8 }}
@@ -130,12 +146,20 @@ spec:
         kube_persistentvolumeclaim_access_mode{ access_mode="ReadOnlyMany"} == 1
         unless on ({{ range $.Values.defaultRules.additionalAggregationLabels }}{{ . }},{{ end }}cluster, namespace, persistentvolumeclaim)
         kube_persistentvolumeclaim_labels{label_excluded_from_alerts="true"} == 1
+      {{- if and .Values.customRules (index .Values.customRules "KubePersistentVolumeInodesFillingUp") }}
+      for: {{ index .Values.customRules.KubePersistentVolumeInodesFillingUp "for" | default "1m" }}
+      {{- else}}
       for: 1m
+      {{- end }}
       {{- with .Values.defaultRules.keepFiringFor }}
       keep_firing_for: "{{ . }}"
       {{- end }}
       labels:
+        {{- if and .Values.customRules (index .Values.customRules "KubePersistentVolumeInodesFillingUp") }}
+        severity: {{ index .Values.customRules.KubePersistentVolumeInodesFillingUp "labelsSeverity" | default "critical" }}
+        {{- else }}
         severity: critical
+        {{- end }}
       {{- if or .Values.defaultRules.additionalRuleLabels .Values.defaultRules.additionalRuleGroupLabels.kubernetesStorage }}
         {{- with .Values.defaultRules.additionalRuleLabels }}
           {{- toYaml . | nindent 8 }}
@@ -171,12 +195,20 @@ spec:
         kube_persistentvolumeclaim_access_mode{ access_mode="ReadOnlyMany"} == 1
         unless on ({{ range $.Values.defaultRules.additionalAggregationLabels }}{{ . }},{{ end }}cluster, namespace, persistentvolumeclaim)
         kube_persistentvolumeclaim_labels{label_excluded_from_alerts="true"} == 1
+      {{- if and .Values.customRules (index .Values.customRules "KubePersistentVolumeInodesFillingUp") }}
+      for: {{ index .Values.customRules.KubePersistentVolumeInodesFillingUp "for" | default "1h" }}
+      {{- else}}
       for: 1h
+      {{- end }}
       {{- with .Values.defaultRules.keepFiringFor }}
       keep_firing_for: "{{ . }}"
       {{- end }}
       labels:
+        {{- if and .Values.customRules (index .Values.customRules "KubePersistentVolumeInodesFillingUp") }}
+        severity: {{ index .Values.customRules.KubePersistentVolumeInodesFillingUp "labelsSeverity" | default "warning" }}
+        {{- else }}
         severity: warning
+        {{- end }}
       {{- if or .Values.defaultRules.additionalRuleLabels .Values.defaultRules.additionalRuleGroupLabels.kubernetesStorage }}
         {{- with .Values.defaultRules.additionalRuleLabels }}
           {{- toYaml . | nindent 8 }}
@@ -199,12 +231,20 @@ spec:
         runbook_url: {{ .Values.defaultRules.runbookUrl }}/kubernetes/kubepersistentvolumeerrors
         summary: PersistentVolume is having issues with provisioning.
       expr: kube_persistentvolume_status_phase{phase=~"Failed|Pending",job="{{ $kubeStateMetricsJob }}"} > 0
+      {{- if and .Values.customRules (index .Values.customRules "KubePersistentVolumeErrors") }}
+      for: {{ index .Values.customRules.KubePersistentVolumeErrors "for" | default "5m" }}
+      {{- else}}
       for: 5m
+      {{- end }}
       {{- with .Values.defaultRules.keepFiringFor }}
       keep_firing_for: "{{ . }}"
       {{- end }}
       labels:
+        {{- if and .Values.customRules (index .Values.customRules "KubePersistentVolumeErrors") }}
+        severity: {{ index .Values.customRules.KubePersistentVolumeErrors "labelsSeverity" | default "critical" }}
+        {{- else }}
         severity: critical
+        {{- end }}
       {{- if or .Values.defaultRules.additionalRuleLabels .Values.defaultRules.additionalRuleGroupLabels.kubernetesStorage }}
         {{- with .Values.defaultRules.additionalRuleLabels }}
           {{- toYaml . | nindent 8 }}

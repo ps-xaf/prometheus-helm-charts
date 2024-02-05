@@ -40,13 +40,21 @@ spec:
         sum(apiserver_request:burnrate1h) > (14.40 * 0.01000)
         and
         sum(apiserver_request:burnrate5m) > (14.40 * 0.01000)
+      {{- if and .Values.customRules (index .Values.customRules "KubeAPIErrorBudgetBurn") }}
+      for: {{ index .Values.customRules.KubeAPIErrorBudgetBurn "for" | default "2m" }}
+      {{- else}}
       for: 2m
+      {{- end }}
       {{- with .Values.defaultRules.keepFiringFor }}
       keep_firing_for: "{{ . }}"
       {{- end }}
       labels:
         long: 1h
+        {{- if and .Values.customRules (index .Values.customRules "KubeAPIErrorBudgetBurn") }}
+        severity: {{ index .Values.customRules.KubeAPIErrorBudgetBurn "labelsSeverity" | default "critical" }}
+        {{- else }}
         severity: critical
+        {{- end }}
         short: 5m
       {{- if or .Values.defaultRules.additionalRuleLabels .Values.defaultRules.additionalRuleGroupLabels.kubeApiserverSlos }}
         {{- with .Values.defaultRules.additionalRuleLabels }}
@@ -73,13 +81,21 @@ spec:
         sum(apiserver_request:burnrate6h) > (6.00 * 0.01000)
         and
         sum(apiserver_request:burnrate30m) > (6.00 * 0.01000)
+      {{- if and .Values.customRules (index .Values.customRules "KubeAPIErrorBudgetBurn") }}
+      for: {{ index .Values.customRules.KubeAPIErrorBudgetBurn "for" | default "15m" }}
+      {{- else}}
       for: 15m
+      {{- end }}
       {{- with .Values.defaultRules.keepFiringFor }}
       keep_firing_for: "{{ . }}"
       {{- end }}
       labels:
         long: 6h
+        {{- if and .Values.customRules (index .Values.customRules "KubeAPIErrorBudgetBurn") }}
+        severity: {{ index .Values.customRules.KubeAPIErrorBudgetBurn "labelsSeverity" | default "critical" }}
+        {{- else }}
         severity: critical
+        {{- end }}
         short: 30m
       {{- if or .Values.defaultRules.additionalRuleLabels .Values.defaultRules.additionalRuleGroupLabels.kubeApiserverSlos }}
         {{- with .Values.defaultRules.additionalRuleLabels }}
@@ -106,13 +122,21 @@ spec:
         sum(apiserver_request:burnrate1d) > (3.00 * 0.01000)
         and
         sum(apiserver_request:burnrate2h) > (3.00 * 0.01000)
+      {{- if and .Values.customRules (index .Values.customRules "KubeAPIErrorBudgetBurn") }}
+      for: {{ index .Values.customRules.KubeAPIErrorBudgetBurn "for" | default "1h" }}
+      {{- else}}
       for: 1h
+      {{- end }}
       {{- with .Values.defaultRules.keepFiringFor }}
       keep_firing_for: "{{ . }}"
       {{- end }}
       labels:
         long: 1d
+        {{- if and .Values.customRules (index .Values.customRules "KubeAPIErrorBudgetBurn") }}
+        severity: {{ index .Values.customRules.KubeAPIErrorBudgetBurn "labelsSeverity" | default "warning" }}
+        {{- else }}
         severity: warning
+        {{- end }}
         short: 2h
       {{- if or .Values.defaultRules.additionalRuleLabels .Values.defaultRules.additionalRuleGroupLabels.kubeApiserverSlos }}
         {{- with .Values.defaultRules.additionalRuleLabels }}
@@ -139,13 +163,21 @@ spec:
         sum(apiserver_request:burnrate3d) > (1.00 * 0.01000)
         and
         sum(apiserver_request:burnrate6h) > (1.00 * 0.01000)
+      {{- if and .Values.customRules (index .Values.customRules "KubeAPIErrorBudgetBurn") }}
+      for: {{ index .Values.customRules.KubeAPIErrorBudgetBurn "for" | default "3h" }}
+      {{- else}}
       for: 3h
+      {{- end }}
       {{- with .Values.defaultRules.keepFiringFor }}
       keep_firing_for: "{{ . }}"
       {{- end }}
       labels:
         long: 3d
+        {{- if and .Values.customRules (index .Values.customRules "KubeAPIErrorBudgetBurn") }}
+        severity: {{ index .Values.customRules.KubeAPIErrorBudgetBurn "labelsSeverity" | default "warning" }}
+        {{- else }}
         severity: warning
+        {{- end }}
         short: 6h
       {{- if or .Values.defaultRules.additionalRuleLabels .Values.defaultRules.additionalRuleGroupLabels.kubeApiserverSlos }}
         {{- with .Values.defaultRules.additionalRuleLabels }}

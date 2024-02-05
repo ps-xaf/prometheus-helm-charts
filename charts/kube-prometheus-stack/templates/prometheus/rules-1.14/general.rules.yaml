@@ -37,12 +37,20 @@ spec:
         runbook_url: {{ .Values.defaultRules.runbookUrl }}/general/targetdown
         summary: One or more targets are unreachable.
       expr: 100 * (count(up == 0) BY (cluster, job, namespace, service) / count(up) BY (cluster, job, namespace, service)) > 10
+      {{- if and .Values.customRules (index .Values.customRules "TargetDown") }}
+      for: {{ index .Values.customRules.TargetDown "for" | default "10m" }}
+      {{- else}}
       for: 10m
+      {{- end }}
       {{- with .Values.defaultRules.keepFiringFor }}
       keep_firing_for: "{{ . }}"
       {{- end }}
       labels:
+        {{- if and .Values.customRules (index .Values.customRules "TargetDown") }}
+        severity: {{ index .Values.customRules.TargetDown "labelsSeverity" | default "warning" }}
+        {{- else }}
         severity: warning
+        {{- end }}
       {{- if or .Values.defaultRules.additionalRuleLabels .Values.defaultRules.additionalRuleGroupLabels.general }}
         {{- with .Values.defaultRules.additionalRuleLabels }}
           {{- toYaml . | nindent 8 }}
@@ -76,7 +84,11 @@ spec:
         summary: An alert that should always be firing to certify that Alertmanager is working properly.
       expr: vector(1)
       labels:
+        {{- if and .Values.customRules (index .Values.customRules "Watchdog") }}
+        severity: {{ index .Values.customRules.Watchdog "labelsSeverity" | default "none" }}
+        {{- else }}
         severity: none
+        {{- end }}
       {{- if or .Values.defaultRules.additionalRuleLabels .Values.defaultRules.additionalRuleGroupLabels.general }}
         {{- with .Values.defaultRules.additionalRuleLabels }}
           {{- toYaml . | nindent 8 }}
@@ -112,7 +124,11 @@ spec:
         summary: Info-level alert inhibition.
       expr: ALERTS{severity = "info"} == 1 unless on ({{ range $.Values.defaultRules.additionalAggregationLabels }}{{ . }},{{ end }}namespace) ALERTS{alertname != "InfoInhibitor", severity =~ "warning|critical", alertstate="firing"} == 1
       labels:
+        {{- if and .Values.customRules (index .Values.customRules "InfoInhibitor") }}
+        severity: {{ index .Values.customRules.InfoInhibitor "labelsSeverity" | default "none" }}
+        {{- else }}
         severity: none
+        {{- end }}
       {{- if or .Values.defaultRules.additionalRuleLabels .Values.defaultRules.additionalRuleGroupLabels.general }}
         {{- with .Values.defaultRules.additionalRuleLabels }}
           {{- toYaml . | nindent 8 }}

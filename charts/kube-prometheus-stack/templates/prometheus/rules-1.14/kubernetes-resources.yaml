@@ -41,12 +41,20 @@ spec:
         sum(namespace_cpu:kube_pod_container_resource_requests:sum{job="{{ $kubeStateMetricsJob }}",}) by ({{ range $.Values.defaultRules.additionalAggregationLabels }}{{ . }},{{ end }}cluster) - (sum(kube_node_status_allocatable{job="{{ $kubeStateMetricsJob }}",resource="cpu"}) by ({{ range $.Values.defaultRules.additionalAggregationLabels }}{{ . }},{{ end }}cluster) - max(kube_node_status_allocatable{job="{{ $kubeStateMetricsJob }}",resource="cpu"}) by ({{ range $.Values.defaultRules.additionalAggregationLabels }}{{ . }},{{ end }}cluster)) > 0
         and
         (sum(kube_node_status_allocatable{job="{{ $kubeStateMetricsJob }}",resource="cpu"}) by ({{ range $.Values.defaultRules.additionalAggregationLabels }}{{ . }},{{ end }}cluster) - max(kube_node_status_allocatable{job="{{ $kubeStateMetricsJob }}",resource="cpu"}) by ({{ range $.Values.defaultRules.additionalAggregationLabels }}{{ . }},{{ end }}cluster)) > 0
+      {{- if and .Values.customRules (index .Values.customRules "KubeCPUOvercommit") }}
+      for: {{ index .Values.customRules.KubeCPUOvercommit "for" | default "10m" }}
+      {{- else}}
       for: 10m
+      {{- end }}
       {{- with .Values.defaultRules.keepFiringFor }}
       keep_firing_for: "{{ . }}"
       {{- end }}
       labels:
+        {{- if and .Values.customRules (index .Values.customRules "KubeCPUOvercommit") }}
+        severity: {{ index .Values.customRules.KubeCPUOvercommit "labelsSeverity" | default "warning" }}
+        {{- else }}
         severity: warning
+        {{- end }}
       {{- if or .Values.defaultRules.additionalRuleLabels .Values.defaultRules.additionalRuleGroupLabels.kubernetesResources }}
         {{- with .Values.defaultRules.additionalRuleLabels }}
           {{- toYaml . | nindent 8 }}
@@ -72,12 +80,20 @@ spec:
         sum(namespace_memory:kube_pod_container_resource_requests:sum{}) by ({{ range $.Values.defaultRules.additionalAggregationLabels }}{{ . }},{{ end }}cluster) - (sum(kube_node_status_allocatable{resource="memory", job="{{ $kubeStateMetricsJob }}"}) by ({{ range $.Values.defaultRules.additionalAggregationLabels }}{{ . }},{{ end }}cluster) - max(kube_node_status_allocatable{resource="memory", job="{{ $kubeStateMetricsJob }}"}) by ({{ range $.Values.defaultRules.additionalAggregationLabels }}{{ . }},{{ end }}cluster)) > 0
         and
         (sum(kube_node_status_allocatable{resource="memory", job="{{ $kubeStateMetricsJob }}"}) by ({{ range $.Values.defaultRules.additionalAggregationLabels }}{{ . }},{{ end }}cluster) - max(kube_node_status_allocatable{resource="memory", job="{{ $kubeStateMetricsJob }}"}) by ({{ range $.Values.defaultRules.additionalAggregationLabels }}{{ . }},{{ end }}cluster)) > 0
+      {{- if and .Values.customRules (index .Values.customRules "KubeMemoryOvercommit") }}
+      for: {{ index .Values.customRules.KubeMemoryOvercommit "for" | default "10m" }}
+      {{- else}}
       for: 10m
+      {{- end }}
       {{- with .Values.defaultRules.keepFiringFor }}
       keep_firing_for: "{{ . }}"
       {{- end }}
       labels:
+        {{- if and .Values.customRules (index .Values.customRules "KubeMemoryOvercommit") }}
+        severity: {{ index .Values.customRules.KubeMemoryOvercommit "labelsSeverity" | default "warning" }}
+        {{- else }}
         severity: warning
+        {{- end }}
       {{- if or .Values.defaultRules.additionalRuleLabels .Values.defaultRules.additionalRuleGroupLabels.kubernetesResources }}
         {{- with .Values.defaultRules.additionalRuleLabels }}
           {{- toYaml . | nindent 8 }}
@@ -104,12 +120,20 @@ spec:
           /
         sum(kube_node_status_allocatable{resource="cpu", job="{{ $kubeStateMetricsJob }}"}) by ({{ range $.Values.defaultRules.additionalAggregationLabels }}{{ . }},{{ end }}cluster)
           > 1.5
+      {{- if and .Values.customRules (index .Values.customRules "KubeCPUQuotaOvercommit") }}
+      for: {{ index .Values.customRules.KubeCPUQuotaOvercommit "for" | default "5m" }}
+      {{- else}}
       for: 5m
+      {{- end }}
       {{- with .Values.defaultRules.keepFiringFor }}
       keep_firing_for: "{{ . }}"
       {{- end }}
       labels:
+        {{- if and .Values.customRules (index .Values.customRules "KubeCPUQuotaOvercommit") }}
+        severity: {{ index .Values.customRules.KubeCPUQuotaOvercommit "labelsSeverity" | default "warning" }}
+        {{- else }}
         severity: warning
+        {{- end }}
       {{- if or .Values.defaultRules.additionalRuleLabels .Values.defaultRules.additionalRuleGroupLabels.kubernetesResources }}
         {{- with .Values.defaultRules.additionalRuleLabels }}
           {{- toYaml . | nindent 8 }}
@@ -136,12 +160,20 @@ spec:
           /
         sum(kube_node_status_allocatable{resource="memory", job="{{ $kubeStateMetricsJob }}"}) by ({{ range $.Values.defaultRules.additionalAggregationLabels }}{{ . }},{{ end }}cluster)
           > 1.5
+      {{- if and .Values.customRules (index .Values.customRules "KubeMemoryQuotaOvercommit") }}
+      for: {{ index .Values.customRules.KubeMemoryQuotaOvercommit "for" | default "5m" }}
+      {{- else}}
       for: 5m
+      {{- end }}
       {{- with .Values.defaultRules.keepFiringFor }}
       keep_firing_for: "{{ . }}"
       {{- end }}
       labels:
+        {{- if and .Values.customRules (index .Values.customRules "KubeMemoryQuotaOvercommit") }}
+        severity: {{ index .Values.customRules.KubeMemoryQuotaOvercommit "labelsSeverity" | default "warning" }}
+        {{- else }}
         severity: warning
+        {{- end }}
       {{- if or .Values.defaultRules.additionalRuleLabels .Values.defaultRules.additionalRuleGroupLabels.kubernetesResources }}
         {{- with .Values.defaultRules.additionalRuleLabels }}
           {{- toYaml . | nindent 8 }}
@@ -168,12 +200,20 @@ spec:
           / ignoring(instance, job, type)
         (kube_resourcequota{job="{{ $kubeStateMetricsJob }}", type="hard"} > 0)
           > 0.9 < 1
+      {{- if and .Values.customRules (index .Values.customRules "KubeQuotaAlmostFull") }}
+      for: {{ index .Values.customRules.KubeQuotaAlmostFull "for" | default "15m" }}
+      {{- else}}
       for: 15m
+      {{- end }}
       {{- with .Values.defaultRules.keepFiringFor }}
       keep_firing_for: "{{ . }}"
       {{- end }}
       labels:
+        {{- if and .Values.customRules (index .Values.customRules "KubeQuotaAlmostFull") }}
+        severity: {{ index .Values.customRules.KubeQuotaAlmostFull "labelsSeverity" | default "info" }}
+        {{- else }}
         severity: info
+        {{- end }}
       {{- if or .Values.defaultRules.additionalRuleLabels .Values.defaultRules.additionalRuleGroupLabels.kubernetesResources }}
         {{- with .Values.defaultRules.additionalRuleLabels }}
           {{- toYaml . | nindent 8 }}
@@ -200,12 +240,20 @@ spec:
           / ignoring(instance, job, type)
         (kube_resourcequota{job="{{ $kubeStateMetricsJob }}", type="hard"} > 0)
           == 1
+      {{- if and .Values.customRules (index .Values.customRules "KubeQuotaFullyUsed") }}
+      for: {{ index .Values.customRules.KubeQuotaFullyUsed "for" | default "15m" }}
+      {{- else}}
       for: 15m
+      {{- end }}
       {{- with .Values.defaultRules.keepFiringFor }}
       keep_firing_for: "{{ . }}"
       {{- end }}
       labels:
+        {{- if and .Values.customRules (index .Values.customRules "KubeQuotaFullyUsed") }}
+        severity: {{ index .Values.customRules.KubeQuotaFullyUsed "labelsSeverity" | default "info" }}
+        {{- else }}
         severity: info
+        {{- end }}
       {{- if or .Values.defaultRules.additionalRuleLabels .Values.defaultRules.additionalRuleGroupLabels.kubernetesResources }}
         {{- with .Values.defaultRules.additionalRuleLabels }}
           {{- toYaml . | nindent 8 }}
@@ -232,12 +280,20 @@ spec:
           / ignoring(instance, job, type)
         (kube_resourcequota{job="{{ $kubeStateMetricsJob }}", type="hard"} > 0)
           > 1
+      {{- if and .Values.customRules (index .Values.customRules "KubeQuotaExceeded") }}
+      for: {{ index .Values.customRules.KubeQuotaExceeded "for" | default "15m" }}
+      {{- else}}
       for: 15m
+      {{- end }}
       {{- with .Values.defaultRules.keepFiringFor }}
       keep_firing_for: "{{ . }}"
       {{- end }}
       labels:
+        {{- if and .Values.customRules (index .Values.customRules "KubeQuotaExceeded") }}
+        severity: {{ index .Values.customRules.KubeQuotaExceeded "labelsSeverity" | default "warning" }}
+        {{- else }}
         severity: warning
+        {{- end }}
       {{- if or .Values.defaultRules.additionalRuleLabels .Values.defaultRules.additionalRuleGroupLabels.kubernetesResources }}
         {{- with .Values.defaultRules.additionalRuleLabels }}
           {{- toYaml . | nindent 8 }}
@@ -264,12 +320,20 @@ spec:
           /
         sum(increase(container_cpu_cfs_periods_total{}[5m])) by ({{ range $.Values.defaultRules.additionalAggregationLabels }}{{ . }},{{ end }}cluster, container, pod, namespace)
           > ( 25 / 100 )
+      {{- if and .Values.customRules (index .Values.customRules "CPUThrottlingHigh") }}
+      for: {{ index .Values.customRules.CPUThrottlingHigh "for" | default "15m" }}
+      {{- else}}
       for: 15m
+      {{- end }}
       {{- with .Values.defaultRules.keepFiringFor }}
       keep_firing_for: "{{ . }}"
       {{- end }}
       labels:
+        {{- if and .Values.customRules (index .Values.customRules "CPUThrottlingHigh") }}
+        severity: {{ index .Values.customRules.CPUThrottlingHigh "labelsSeverity" | default "info" }}
+        {{- else }}
         severity: info
+        {{- end }}
       {{- if or .Values.defaultRules.additionalRuleLabels .Values.defaultRules.additionalRuleGroupLabels.kubernetesResources }}
         {{- with .Values.defaultRules.additionalRuleLabels }}
           {{- toYaml . | nindent 8 }}

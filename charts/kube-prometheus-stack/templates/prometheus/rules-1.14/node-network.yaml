@@ -37,12 +37,20 @@ spec:
         runbook_url: {{ .Values.defaultRules.runbookUrl }}/general/nodenetworkinterfaceflapping
         summary: Network interface is often changing its status
       expr: changes(node_network_up{job="node-exporter",device!~"veth.+"}[2m]) > 2
+      {{- if and .Values.customRules (index .Values.customRules "NodeNetworkInterfaceFlapping") }}
+      for: {{ index .Values.customRules.NodeNetworkInterfaceFlapping "for" | default "2m" }}
+      {{- else}}
       for: 2m
+      {{- end }}
       {{- with .Values.defaultRules.keepFiringFor }}
       keep_firing_for: "{{ . }}"
       {{- end }}
       labels:
+        {{- if and .Values.customRules (index .Values.customRules "NodeNetworkInterfaceFlapping") }}
+        severity: {{ index .Values.customRules.NodeNetworkInterfaceFlapping "labelsSeverity" | default "warning" }}
+        {{- else }}
         severity: warning
+        {{- end }}
       {{- if or .Values.defaultRules.additionalRuleLabels .Values.defaultRules.additionalRuleGroupLabels.network }}
         {{- with .Values.defaultRules.additionalRuleLabels }}
           {{- toYaml . | nindent 8 }}

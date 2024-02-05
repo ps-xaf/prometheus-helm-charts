@@ -39,12 +39,20 @@ spec:
         runbook_url: {{ .Values.defaultRules.runbookUrl }}/prometheus-operator/prometheusoperatorlisterrors
         summary: Errors while performing list operations in controller.
       expr: (sum by ({{ range $.Values.defaultRules.additionalAggregationLabels }}{{ . }},{{ end }}cluster,controller,namespace) (rate(prometheus_operator_list_operations_failed_total{job="{{ $operatorJob }}",namespace="{{ $namespace }}"}[10m])) / sum by ({{ range $.Values.defaultRules.additionalAggregationLabels }}{{ . }},{{ end }}cluster,controller,namespace) (rate(prometheus_operator_list_operations_total{job="{{ $operatorJob }}",namespace="{{ $namespace }}"}[10m]))) > 0.4
+      {{- if and .Values.customRules (index .Values.customRules "PrometheusOperatorListErrors") }}
+      for: {{ index .Values.customRules.PrometheusOperatorListErrors "for" | default "15m" }}
+      {{- else}}
       for: 15m
+      {{- end }}
       {{- with .Values.defaultRules.keepFiringFor }}
       keep_firing_for: "{{ . }}"
       {{- end }}
       labels:
+        {{- if and .Values.customRules (index .Values.customRules "PrometheusOperatorListErrors") }}
+        severity: {{ index .Values.customRules.PrometheusOperatorListErrors "labelsSeverity" | default "warning" }}
+        {{- else }}
         severity: warning
+        {{- end }}
       {{- if or .Values.defaultRules.additionalRuleLabels .Values.defaultRules.additionalRuleGroupLabels.prometheusOperator }}
         {{- with .Values.defaultRules.additionalRuleLabels }}
           {{- toYaml . | nindent 8 }}
@@ -67,12 +75,20 @@ spec:
         runbook_url: {{ .Values.defaultRules.runbookUrl }}/prometheus-operator/prometheusoperatorwatcherrors
         summary: Errors while performing watch operations in controller.
       expr: (sum by ({{ range $.Values.defaultRules.additionalAggregationLabels }}{{ . }},{{ end }}cluster,controller,namespace) (rate(prometheus_operator_watch_operations_failed_total{job="{{ $operatorJob }}",namespace="{{ $namespace }}"}[5m])) / sum by ({{ range $.Values.defaultRules.additionalAggregationLabels }}{{ . }},{{ end }}cluster,controller,namespace) (rate(prometheus_operator_watch_operations_total{job="{{ $operatorJob }}",namespace="{{ $namespace }}"}[5m]))) > 0.4
+      {{- if and .Values.customRules (index .Values.customRules "PrometheusOperatorWatchErrors") }}
+      for: {{ index .Values.customRules.PrometheusOperatorWatchErrors "for" | default "15m" }}
+      {{- else}}
       for: 15m
+      {{- end }}
       {{- with .Values.defaultRules.keepFiringFor }}
       keep_firing_for: "{{ . }}"
       {{- end }}
       labels:
+        {{- if and .Values.customRules (index .Values.customRules "PrometheusOperatorWatchErrors") }}
+        severity: {{ index .Values.customRules.PrometheusOperatorWatchErrors "labelsSeverity" | default "warning" }}
+        {{- else }}
         severity: warning
+        {{- end }}
       {{- if or .Values.defaultRules.additionalRuleLabels .Values.defaultRules.additionalRuleGroupLabels.prometheusOperator }}
         {{- with .Values.defaultRules.additionalRuleLabels }}
           {{- toYaml . | nindent 8 }}
@@ -95,12 +111,20 @@ spec:
         runbook_url: {{ .Values.defaultRules.runbookUrl }}/prometheus-operator/prometheusoperatorsyncfailed
         summary: Last controller reconciliation failed
       expr: min_over_time(prometheus_operator_syncs{status="failed",job="{{ $operatorJob }}",namespace="{{ $namespace }}"}[5m]) > 0
+      {{- if and .Values.customRules (index .Values.customRules "PrometheusOperatorSyncFailed") }}
+      for: {{ index .Values.customRules.PrometheusOperatorSyncFailed "for" | default "10m" }}
+      {{- else}}
       for: 10m
+      {{- end }}
       {{- with .Values.defaultRules.keepFiringFor }}
       keep_firing_for: "{{ . }}"
       {{- end }}
       labels:
+        {{- if and .Values.customRules (index .Values.customRules "PrometheusOperatorSyncFailed") }}
+        severity: {{ index .Values.customRules.PrometheusOperatorSyncFailed "labelsSeverity" | default "warning" }}
+        {{- else }}
         severity: warning
+        {{- end }}
       {{- if or .Values.defaultRules.additionalRuleLabels .Values.defaultRules.additionalRuleGroupLabels.prometheusOperator }}
         {{- with .Values.defaultRules.additionalRuleLabels }}
           {{- toYaml . | nindent 8 }}
@@ -123,12 +147,20 @@ spec:
         runbook_url: {{ .Values.defaultRules.runbookUrl }}/prometheus-operator/prometheusoperatorreconcileerrors
         summary: Errors while reconciling objects.
       expr: (sum by ({{ range $.Values.defaultRules.additionalAggregationLabels }}{{ . }},{{ end }}cluster,controller,namespace) (rate(prometheus_operator_reconcile_errors_total{job="{{ $operatorJob }}",namespace="{{ $namespace }}"}[5m]))) / (sum by ({{ range $.Values.defaultRules.additionalAggregationLabels }}{{ . }},{{ end }}cluster,controller,namespace) (rate(prometheus_operator_reconcile_operations_total{job="{{ $operatorJob }}",namespace="{{ $namespace }}"}[5m]))) > 0.1
+      {{- if and .Values.customRules (index .Values.customRules "PrometheusOperatorReconcileErrors") }}
+      for: {{ index .Values.customRules.PrometheusOperatorReconcileErrors "for" | default "10m" }}
+      {{- else}}
       for: 10m
+      {{- end }}
       {{- with .Values.defaultRules.keepFiringFor }}
       keep_firing_for: "{{ . }}"
       {{- end }}
       labels:
+        {{- if and .Values.customRules (index .Values.customRules "PrometheusOperatorReconcileErrors") }}
+        severity: {{ index .Values.customRules.PrometheusOperatorReconcileErrors "labelsSeverity" | default "warning" }}
+        {{- else }}
         severity: warning
+        {{- end }}
       {{- if or .Values.defaultRules.additionalRuleLabels .Values.defaultRules.additionalRuleGroupLabels.prometheusOperator }}
         {{- with .Values.defaultRules.additionalRuleLabels }}
           {{- toYaml . | nindent 8 }}
@@ -151,12 +183,20 @@ spec:
         runbook_url: {{ .Values.defaultRules.runbookUrl }}/prometheus-operator/prometheusoperatorstatusupdateerrors
         summary: Errors while updating objects status.
       expr: (sum by ({{ range $.Values.defaultRules.additionalAggregationLabels }}{{ . }},{{ end }}cluster,controller,namespace) (rate(prometheus_operator_status_update_errors_total{job="{{ $operatorJob }}",namespace="{{ $namespace }}"}[5m]))) / (sum by ({{ range $.Values.defaultRules.additionalAggregationLabels }}{{ . }},{{ end }}cluster,controller,namespace) (rate(prometheus_operator_status_update_operations_total{job="{{ $operatorJob }}",namespace="{{ $namespace }}"}[5m]))) > 0.1
+      {{- if and .Values.customRules (index .Values.customRules "PrometheusOperatorStatusUpdateErrors") }}
+      for: {{ index .Values.customRules.PrometheusOperatorStatusUpdateErrors "for" | default "10m" }}
+      {{- else}}
       for: 10m
+      {{- end }}
       {{- with .Values.defaultRules.keepFiringFor }}
       keep_firing_for: "{{ . }}"
       {{- end }}
       labels:
+        {{- if and .Values.customRules (index .Values.customRules "PrometheusOperatorStatusUpdateErrors") }}
+        severity: {{ index .Values.customRules.PrometheusOperatorStatusUpdateErrors "labelsSeverity" | default "warning" }}
+        {{- else }}
         severity: warning
+        {{- end }}
       {{- if or .Values.defaultRules.additionalRuleLabels .Values.defaultRules.additionalRuleGroupLabels.prometheusOperator }}
         {{- with .Values.defaultRules.additionalRuleLabels }}
           {{- toYaml . | nindent 8 }}
@@ -179,12 +219,20 @@ spec:
         runbook_url: {{ .Values.defaultRules.runbookUrl }}/prometheus-operator/prometheusoperatornodelookuperrors
         summary: Errors while reconciling Prometheus.
       expr: rate(prometheus_operator_node_address_lookup_errors_total{job="{{ $operatorJob }}",namespace="{{ $namespace }}"}[5m]) > 0.1
+      {{- if and .Values.customRules (index .Values.customRules "PrometheusOperatorNodeLookupErrors") }}
+      for: {{ index .Values.customRules.PrometheusOperatorNodeLookupErrors "for" | default "10m" }}
+      {{- else}}
       for: 10m
+      {{- end }}
       {{- with .Values.defaultRules.keepFiringFor }}
       keep_firing_for: "{{ . }}"
       {{- end }}
       labels:
+        {{- if and .Values.customRules (index .Values.customRules "PrometheusOperatorNodeLookupErrors") }}
+        severity: {{ index .Values.customRules.PrometheusOperatorNodeLookupErrors "labelsSeverity" | default "warning" }}
+        {{- else }}
         severity: warning
+        {{- end }}
       {{- if or .Values.defaultRules.additionalRuleLabels .Values.defaultRules.additionalRuleGroupLabels.prometheusOperator }}
         {{- with .Values.defaultRules.additionalRuleLabels }}
           {{- toYaml . | nindent 8 }}
@@ -207,12 +255,20 @@ spec:
         runbook_url: {{ .Values.defaultRules.runbookUrl }}/prometheus-operator/prometheusoperatornotready
         summary: Prometheus operator not ready
       expr: min by ({{ range $.Values.defaultRules.additionalAggregationLabels }}{{ . }},{{ end }}cluster,controller,namespace) (max_over_time(prometheus_operator_ready{job="{{ $operatorJob }}",namespace="{{ $namespace }}"}[5m]) == 0)
+      {{- if and .Values.customRules (index .Values.customRules "PrometheusOperatorNotReady") }}
+      for: {{ index .Values.customRules.PrometheusOperatorNotReady "for" | default "5m" }}
+      {{- else}}
       for: 5m
+      {{- end }}
       {{- with .Values.defaultRules.keepFiringFor }}
       keep_firing_for: "{{ . }}"
       {{- end }}
       labels:
+        {{- if and .Values.customRules (index .Values.customRules "PrometheusOperatorNotReady") }}
+        severity: {{ index .Values.customRules.PrometheusOperatorNotReady "labelsSeverity" | default "warning" }}
+        {{- else }}
         severity: warning
+        {{- end }}
       {{- if or .Values.defaultRules.additionalRuleLabels .Values.defaultRules.additionalRuleGroupLabels.prometheusOperator }}
         {{- with .Values.defaultRules.additionalRuleLabels }}
           {{- toYaml . | nindent 8 }}
@@ -235,12 +291,20 @@ spec:
         runbook_url: {{ .Values.defaultRules.runbookUrl }}/prometheus-operator/prometheusoperatorrejectedresources
         summary: Resources rejected by Prometheus operator
       expr: min_over_time(prometheus_operator_managed_resources{state="rejected",job="{{ $operatorJob }}",namespace="{{ $namespace }}"}[5m]) > 0
+      {{- if and .Values.customRules (index .Values.customRules "PrometheusOperatorRejectedResources") }}
+      for: {{ index .Values.customRules.PrometheusOperatorRejectedResources "for" | default "5m" }}
+      {{- else}}
       for: 5m
+      {{- end }}
       {{- with .Values.defaultRules.keepFiringFor }}
       keep_firing_for: "{{ . }}"
       {{- end }}
       labels:
+        {{- if and .Values.customRules (index .Values.customRules "PrometheusOperatorRejectedResources") }}
+        severity: {{ index .Values.customRules.PrometheusOperatorRejectedResources "labelsSeverity" | default "warning" }}
+        {{- else }}
         severity: warning
+        {{- end }}
       {{- if or .Values.defaultRules.additionalRuleLabels .Values.defaultRules.additionalRuleGroupLabels.prometheusOperator }}
         {{- with .Values.defaultRules.additionalRuleLabels }}
           {{- toYaml . | nindent 8 }}
