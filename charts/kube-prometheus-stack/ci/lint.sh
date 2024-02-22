@@ -24,6 +24,12 @@ PATH="$(go env GOPATH)/bin:$PATH"
 export PATH
 
 ./hack/sync_prometheus_rules.py
+echo "====================================================================================================================="
+echo "Showing git diff"
+git diff
+echo "====================================================================================================================="
+git diff --exit-code
+echo $?
 if ! git diff --exit-code; then
   echo "Changes inside rules are not supported!"
   echo "Please run ./hack/sync_prometheus_rules.py"
