@@ -35,7 +35,7 @@ spec:
 {{- if .Values.defaultRules.additionalRuleGroupAnnotations.alertmanager }}
 {{ toYaml .Values.defaultRules.additionalRuleGroupAnnotations.alertmanager | indent 8 }}
 {{- end }}
-        description: Configuration has failed to load for {{`{{`}} $labels.namespace {{`}}`}}/{{`{{`}} $labels.pod{{`}}`}}.
+        description: Configuration has failed to load for {{`{{`}} $labels.namespace {{`}}`}}/{{`{{`}} $labels.pod{{`}}`}}. Just an additional remark to test linting
         runbook_url: {{ .Values.defaultRules.runbookUrl }}/alertmanager/alertmanagerfailedreload
         summary: Reloading an Alertmanager configuration has failed.
       expr: |-
